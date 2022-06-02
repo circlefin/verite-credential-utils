@@ -28,12 +28,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 There are several scripts included to help improve your development experience:
 
-* `npm run setup`: Installs all dependencies and performs any necessary setup.
-* `npm run dev`: Runs the development server.
-* `npm run lint`: Runs the linter.
-* `npm run format`: Runs the formatter (prettier).
-* `npm run type-check`: Runs the type checker.
-* `npm run build`: Builds the application for production.
+- `npm run setup`: Installs all dependencies and performs any necessary setup.
+- `npm run dev`: Runs the development server.
+- `npm run lint`: Runs the linter.
+- `npm run format`: Runs the formatter (prettier).
+- `npm run type-check`: Runs the type checker.
+- `npm run build`: Builds the application for production.
+
+### Visual Studio Code
+
+This project includes some default settings for Visual Studio code, including auto-format (using Prettier) upon save. It also includes a list of recommended extensions.
+
+These settings are located in the `.vscode` directory.
 
 ## Learn more
 
@@ -41,8 +47,8 @@ This project was created using [create-next-app](https://nextjs.org/docs/api-ref
 
 The following tools are used for this project:
 
-* [Next.js](https://nextjs.org) for building and serving the React frontend and node API
-* [TypeScript](https://www.typescriptlang.org)
-* [TailwindCSS](https://tailwindcss.com) for rapid development using utility-first CSS classes
-* [Prettier](https://prettier.io) for code formatting
-* [ESLint](https://eslint.org) for code linting
+- [Next.js](https://nextjs.org) for building and serving the React frontend and node API
+- [TypeScript](https://www.typescriptlang.org)
+- [TailwindCSS](https://tailwindcss.com) for rapid development using utility-first CSS classes
+- [Prettier](https://prettier.io) for code formatting
+- [ESLint](https://eslint.org) for code linting
