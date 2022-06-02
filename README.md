@@ -54,3 +54,4 @@ The following tools are used for this project:
 - [Prettier](https://prettier.io) for code formatting
 - [ESLint](https://eslint.org) for code linting
 - [Jest](https://jestjs.io) for unit testing
+- Github Actions enabled by default
