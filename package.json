@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
+    "dev": "next dev",
+    "setup": "./bin/setup",
     "start": "next start",
     "lint": "next lint"
   },

@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+echo 'Installing dependencies ....'
+npm install
