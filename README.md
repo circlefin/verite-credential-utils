@@ -33,6 +33,7 @@ There are several scripts included to help improve your development experience:
 - `npm run lint`: Runs the linter.
 - `npm run format`: Runs the formatter (prettier).
 - `npm run type-check`: Runs the type checker.
+- `npm test`: Runs the unit tests.
 - `npm run build`: Builds the application for production.
 
 ### Visual Studio Code
@@ -52,3 +53,4 @@ The following tools are used for this project:
 - [TailwindCSS](https://tailwindcss.com) for rapid development using utility-first CSS classes
 - [Prettier](https://prettier.io) for code formatting
 - [ESLint](https://eslint.org) for code linting
+- [Jest](https://jestjs.io) for unit testing
