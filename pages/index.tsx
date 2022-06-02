@@ -1,4 +1,5 @@
 import { DownloadIcon } from "@heroicons/react/solid"
+import Avatar from "boring-avatars"
 import type { NextPage } from "next"
 
 const people = [
@@ -21,7 +22,7 @@ const people = [
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
   },
   {
-    name: "Custom",
+    name: "Customize",
     role: "Pick custom attributes"
   }
 ]
@@ -44,15 +45,18 @@ const Home: NextPage = () => {
             >
               <div className="flex items-center flex-1 min-w-0 space-x-3">
                 <div className="flex-shrink-0">
-                  {person.imageUrl ? (
-                    <img
-                      className="w-10 h-10 rounded-full"
-                      src={person.imageUrl}
-                      alt=""
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br to-gray-500 from-gray-200"></div>
-                  )}
+                  <Avatar
+                    size={40}
+                    name={person.name}
+                    variant="beam"
+                    colors={[
+                      "#5CACC4",
+                      "#8CD19D",
+                      "#CEE879",
+                      "#FCB653",
+                      "#FF5254"
+                    ]}
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
