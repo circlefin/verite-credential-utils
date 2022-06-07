@@ -1,4 +1,6 @@
+import clsx from "clsx"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import React from "react"
 import type { FC, ReactNode } from "react"
 
@@ -8,19 +10,35 @@ type Props = {
   children?: ReactNode
 }
 
+const navigation = [
+  { name: "Credential Faucet", href: "/" },
+  { name: "Verifier", href: "/verifier" },
+  { name: "Issuers", href: "/issuers" }
+]
+
 const Layout: FC<Props> = ({ children }) => {
+  const router = useRouter()
+
   return (
-    <div className="max-w-lg px-4 py-12 mx-auto">
+    <div className="max-w-lg px-4 py-8 mx-auto">
       <header>
-        <div className="text-center">
+        <nav className="flex flex-row w-full text-sm text-center space-between">
+          {navigation.map(({ name, href }) => (
+            <Link href={href} key={href}>
+              <a
+                className={clsx(
+                  router.pathname === href ? "font-bold" : "",
+                  "flex-1 hover:underline"
+                )}
+              >
+                {name}
+              </a>
+            </Link>
+          ))}
+        </nav>
+
+        <div className="mt-12">
           <VeriteLogo className="h-14" />
-          <h1 className="mt-2 text-xl font-medium text-gray-900">
-            Credential Faucet
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            This faucet provides sample credentials in different states, by
-            different issuers, to allow you to test your Verite integration.
-          </p>
         </div>
       </header>
 

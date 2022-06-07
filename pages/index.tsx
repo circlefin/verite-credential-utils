@@ -1,35 +1,45 @@
-import { DownloadIcon } from "@heroicons/react/solid"
+import { CogIcon, DownloadIcon } from "@heroicons/react/solid"
 import Avatar from "boring-avatars"
 import type { NextPage } from "next"
+import { useState } from "react"
+import AnimateHeight from "react-animate-height"
 
-const people = [
+import CredentialForm from "components/credentials/Form"
+import VeriteLogo from "components/icons/VeriteLogo"
+
+const credentials = [
   {
     name: "Lindsay Walton",
-    role: "Active Credential in good standing",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    description: "Active Credential in good standing"
   },
   {
     name: "Courtney Henry",
-    role: "Revoked Credential",
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    description: "Revoked Credential"
   },
   {
     name: "Tom Cook",
-    role: "Expired Credential",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    description: "Expired Credential"
   },
   {
     name: "Customize",
-    role: "Pick custom attributes"
+    description: "Pick custom attributes"
   }
 ]
 
-const Home: NextPage = () => {
+const Page: NextPage = () => {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>()
+
   return (
     <>
+      <div className="text-center">
+        <h1 className="mt-2 text-xl font-medium text-gray-900">
+          Credential Faucet
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          This faucet provides sample credentials in different states, by
+          different issuers, to allow you to test your Verite integration.
+        </p>
+      </div>
       <div className="mt-10">
         <h3 className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
           KYC/AML Credentials
@@ -38,50 +48,88 @@ const Home: NextPage = () => {
           role="list"
           className="mt-4 border-t border-b border-gray-200 divide-y divide-gray-200"
         >
-          {people.map((person, personIdx) => (
-            <li
-              key={personIdx}
-              className="flex items-center justify-between py-4 space-x-3"
-            >
-              <div className="flex items-center flex-1 min-w-0 space-x-3">
+          {credentials.map((credential, i) => (
+            <li key={i} className="flex flex-col py-4 space-x-3">
+              <a
+                className="flex items-center justify-between space-x-3 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  i === selectedIndex
+                    ? setSelectedIndex(null)
+                    : setSelectedIndex(i)
+                }}
+              >
+                <div className="flex items-center flex-1 min-w-0 space-x-3">
+                  <div className="flex-shrink-0">
+                    <Avatar
+                      size={40}
+                      name={credential.name}
+                      variant="beam"
+                      colors={[
+                        "#5CACC4",
+                        "#8CD19D",
+                        "#CEE879",
+                        "#FCB653",
+                        "#FF5254"
+                      ]}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {credential.name}
+                    </p>
+                    <p className="text-sm font-medium text-gray-500 truncate">
+                      {credential.description}
+                    </p>
+                  </div>
+                </div>
                 <div className="flex-shrink-0">
-                  <Avatar
-                    size={40}
-                    name={person.name}
-                    variant="beam"
-                    colors={[
-                      "#5CACC4",
-                      "#8CD19D",
-                      "#CEE879",
-                      "#FCB653",
-                      "#FF5254"
-                    ]}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {person.name}
-                  </p>
-                  <p className="text-sm font-medium text-gray-500 truncate">
-                    {person.role}
-                  </p>
-                </div>
-              </div>
-              <div className="flex-shrink-0">
-                <button
-                  type="button"
-                  className="inline-flex items-center px-3 py-2 bg-gray-100 border border-transparent rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <DownloadIcon
-                    className="-ml-1 mr-0.5 h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm font-medium text-gray-900">
-                    {" "}
-                    Download <span className="sr-only">{person.name}</span>{" "}
+                  <span className="inline-flex items-center px-3 py-2 space-x-2 bg-gray-100 border border-transparent rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {i === credentials.length - 1 ? (
+                      <>
+                        {" "}
+                        <CogIcon
+                          className="-ml-1 mr-0.5 h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span className="text-sm font-medium text-gray-900">
+                          Customize
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <DownloadIcon
+                          className="-ml-1 mr-0.5 h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span className="text-sm font-medium text-gray-900">
+                          Download
+                        </span>
+                      </>
+                    )}
                   </span>
-                </button>
-              </div>
+                </div>
+              </a>
+
+              <AnimateHeight
+                duration={250}
+                easing="ease-in-out"
+                animateOpacity={true}
+                height={selectedIndex === i ? "auto" : 0}
+              >
+                {i === credentials.length - 1 ? (
+                  <div className="flex flex-col sm:flex-row">
+                    <div>
+                      <CredentialForm onSubmit={(e) => e.preventDefault()} />
+                    </div>
+                    <div>QR Code</div>
+                  </div>
+                ) : (
+                  <div className="h-24">
+                    <h2>show a QR code!</h2>
+                  </div>
+                )}
+              </AnimateHeight>
             </li>
           ))}
         </ul>
@@ -90,4 +138,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default Page
