@@ -1,6 +1,6 @@
-## Credential Faucet
+# Credential Utils
 
-This is a service for issuing Verite credentials for testing purposes, useful for hackathons, local integrations, etc.
+This is a service for issuing and verifying Verite credentials for testing purposes, useful for hackathons, local integrations, etc.
 
 ## Getting Started
 
