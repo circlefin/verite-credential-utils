@@ -1,16 +1,18 @@
-import { NextApiHandler } from "next"
 import {
   buildAndSignFulfillment,
   buildIssuer,
   decodeCredentialApplication,
+  decodeVerifiablePresentation,
   KYCAMLAttestation
 } from "verite"
 
+import { handler } from "lib/api-fns"
 import {
   findCredentialType,
   findCredentialIssuer,
   findCredentialStatus
 } from "lib/credential-fns"
+import { apiDebug } from "lib/debug"
 
 /**
  * Endpoint for initializing the Credential Exchange.
@@ -19,7 +21,7 @@ import {
  * a type, issuer, and status for building out a "manifest" and a credential
  * offer for the client mobile wallet to scan.
  */
-const endpoint: NextApiHandler = async (req, res) => {
+const endpoint = handler(async (req, res) => {
   const type = findCredentialType(req.query.type as string)
   const issuerInfo = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
@@ -28,11 +30,12 @@ const endpoint: NextApiHandler = async (req, res) => {
    * Get signer (issuer)
    *
    * When creating a Verifiable Credential, it is signed with the private key
-   * of the issuer. In this demo we load from the environment variable. In a
-   * production environment you would want to be sure to keep the secret
-   * secure.
+   * of the issuer.
    */
-  const issuer = buildIssuer(issuerInfo.did.key, issuerInfo.did.secret)
+  const issuer = buildIssuer(
+    issuerInfo.did.key,
+    Buffer.from(issuerInfo.did.secret, "hex")
+  )
 
   /**
    * Using Presentation Exchange, the client will submit a credential
@@ -66,8 +69,11 @@ const endpoint: NextApiHandler = async (req, res) => {
     attestation // TODO: Update this method signature to allow for KYB, etc
   )
 
+  const decoded = await decodeVerifiablePresentation(presentation)
+  apiDebug("Presentation", JSON.stringify(decoded, null, 2))
+
   // Response
-  res.status(200).json(presentation)
-}
+  res.status(200).send(presentation)
+})
 
 export default endpoint

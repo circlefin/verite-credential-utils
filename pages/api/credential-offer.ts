@@ -1,11 +1,12 @@
-import { NextApiHandler } from "next"
 import { buildCredentialOffer, buildKycAmlManifest } from "verite"
 
+import { handler } from "lib/api-fns"
 import {
   findCredentialIssuer,
   findCredentialStatus,
   findCredentialType
 } from "lib/credential-fns"
+import { apiDebug } from "lib/debug"
 
 /**
  * Endpoint for initializing the Credential Exchange.
@@ -14,7 +15,7 @@ import {
  * a type, issuer, and status for building out a "manifest" and a credential
  * offer for the client mobile wallet to scan.
  */
-const endpoint: NextApiHandler = (req, res) => {
+const endpoint = handler((req, res) => {
   const type = findCredentialType(req.query.type as string)
   const issuer = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
@@ -34,10 +35,12 @@ const endpoint: NextApiHandler = (req, res) => {
   const wrapper = buildCredentialOffer(
     id,
     manifest,
-    `${process.env.HOST}/api/credentials/${id}`
+    `${process.env.HOST}/api/credentials?type=${type.id}&issuer=${issuer.id}&status=${status.id}`
   )
 
+  apiDebug(JSON.stringify(wrapper, null, 2))
+
   res.status(200).json(wrapper)
-}
+})
 
 export default endpoint
