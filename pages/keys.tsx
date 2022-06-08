@@ -1,9 +1,7 @@
-import { EyeIcon } from "@heroicons/react/solid"
 import type { NextPage } from "next"
-import { useState } from "react"
 
 import Issuer from "components/issuer"
-import { ISSUERS } from "lib/credential-fns"
+import { CREDENTIAL_ISSUERS } from "lib/credential-fns"
 
 const Page: NextPage = () => {
   return (
@@ -13,7 +11,7 @@ const Page: NextPage = () => {
           Issuers
         </h3>
         <ul role="list" className="divide-y divide-gray-200">
-          {ISSUERS.map((issuer, i) => (
+          {CREDENTIAL_ISSUERS.map((issuer, i) => (
             <Issuer key={i} issuer={issuer} />
           ))}
         </ul>

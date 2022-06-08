@@ -13,7 +13,7 @@ type Props = {
 const navigation = [
   { name: "Credential Faucet", href: "/" },
   { name: "Verifier", href: "/verifier" },
-  { name: "Issuers", href: "/issuers" }
+  { name: "Keys", href: "/keys" }
 ]
 
 const Layout: FC<Props> = ({ children }) => {

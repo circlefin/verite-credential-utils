@@ -5,29 +5,72 @@ import { useState } from "react"
 import AnimateHeight from "react-animate-height"
 
 import CredentialForm from "components/credentials/Form"
-import VeriteLogo from "components/icons/VeriteLogo"
+import QRCode from "components/credentials/QRCode"
+import {
+  CredentialIssuer,
+  CredentialStatus,
+  CredentialType,
+  CREDENTIAL_ISSUERS,
+  CREDENTIAL_STATUSES,
+  CREDENTIAL_TYPES,
+  findCredentialIssuer,
+  findCredentialStatus,
+  findCredentialType
+} from "lib/credential-fns"
 
 const credentials = [
   {
     name: "Lindsay Walton",
-    description: "Active Credential in good standing"
+    description: "Active Credential in good standing",
+    credential: {
+      type: findCredentialType("kycaml"),
+      issuer: findCredentialIssuer("centre"),
+      status: findCredentialStatus("approved")
+    }
   },
   {
     name: "Courtney Henry",
-    description: "Revoked Credential"
+    description: "Revoked Credential",
+    credential: {
+      type: findCredentialType("kycaml"),
+      issuer: findCredentialIssuer("centre"),
+      status: findCredentialStatus("revoked")
+    }
   },
   {
     name: "Tom Cook",
-    description: "Expired Credential"
+    description: "Expired Credential",
+    credential: {
+      type: findCredentialType("kycaml"),
+      issuer: findCredentialIssuer("centre"),
+      status: findCredentialStatus("expired")
+    }
   },
   {
     name: "Customize",
-    description: "Pick custom attributes"
+    description: "Pick custom attributes",
+    credential: {
+      type: findCredentialType("kycaml"),
+      issuer: findCredentialIssuer("centre"),
+      status: findCredentialStatus("approved")
+    }
   }
 ]
 
 const Page: NextPage = () => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>()
+  const [selectedCredential, setSelectedCredential] = useState<
+    typeof credentials[0] | null
+  >()
+
+  const [customType, setCustomType] = useState<CredentialType>(
+    CREDENTIAL_TYPES[0]
+  )
+  const [customIssuer, setCustomIssuer] = useState<CredentialIssuer>(
+    CREDENTIAL_ISSUERS[0]
+  )
+  const [customStatus, setCustomStatus] = useState<CredentialStatus>(
+    CREDENTIAL_STATUSES[0]
+  )
 
   return (
     <>
@@ -54,9 +97,9 @@ const Page: NextPage = () => {
                 className="flex items-center justify-between space-x-3 cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault()
-                  i === selectedIndex
-                    ? setSelectedIndex(null)
-                    : setSelectedIndex(i)
+                  credential === selectedCredential
+                    ? setSelectedCredential(null)
+                    : setSelectedCredential(credential)
                 }}
               >
                 <div className="flex items-center flex-1 min-w-0 space-x-3">
@@ -115,20 +158,39 @@ const Page: NextPage = () => {
                 duration={250}
                 easing="ease-in-out"
                 animateOpacity={true}
-                height={selectedIndex === i ? "auto" : 0}
+                height={selectedCredential === credential ? "auto" : 0}
               >
-                {i === credentials.length - 1 ? (
-                  <div className="flex flex-col sm:flex-row">
-                    <div>
-                      <CredentialForm onSubmit={(e) => e.preventDefault()} />
+                <div className="py-4">
+                  {i === credentials.length - 1 ? (
+                    <div className="flex flex-col space-x-2 space-y-2 sm:flex-row">
+                      <div className="w-1/2">
+                        <CredentialForm
+                          credentialType={customType}
+                          setCredentialType={setCustomType}
+                          issuer={customIssuer}
+                          setIssuer={setCustomIssuer}
+                          status={customStatus}
+                          setStatus={setCustomStatus}
+                        />
+                      </div>
+                      <div className="w-1/2 text-right">
+                        <QRCode
+                          credentialType={customType}
+                          issuer={customIssuer}
+                          status={customStatus}
+                        />
+                      </div>
                     </div>
-                    <div>QR Code</div>
-                  </div>
-                ) : (
-                  <div className="h-24">
-                    <h2>show a QR code!</h2>
-                  </div>
-                )}
+                  ) : (
+                    <div>
+                      <QRCode
+                        credentialType={credential.credential.type}
+                        issuer={credential.credential.issuer}
+                        status={credential.credential.status}
+                      />
+                    </div>
+                  )}
+                </div>
               </AnimateHeight>
             </li>
           ))}

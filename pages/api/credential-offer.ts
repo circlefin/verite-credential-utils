@@ -1,6 +1,13 @@
 import { NextApiHandler } from "next"
 import { buildCredentialOffer, buildKycAmlManifest } from "verite"
 
+/**
+ * Endpoint for initializing the Credential Exchange.
+ *
+ * This is the first step in the Credential Exchange process.  It accepts
+ * a type, issuer, and status for building out a "manifest" and a credential
+ * offer for the client mobile wallet to scan.
+ */
 const endpoint: NextApiHandler = (req, res) => {
   const type = req.query.type as string
   const issuer = req.query.issuer as string
@@ -21,6 +28,10 @@ const endpoint: NextApiHandler = (req, res) => {
   const wrapper = buildCredentialOffer(
     id,
     manifest,
-    `${process.env.NEXT_PUBLIC_BASEURL}/api/credentials/${req.query.token}`
+    `${process.env.HOST}/api/credentials/${req.query.token}`
   )
+
+  res.status(200).json(wrapper)
 }
+
+export default endpoint

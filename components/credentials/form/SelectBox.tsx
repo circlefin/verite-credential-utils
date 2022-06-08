@@ -4,19 +4,21 @@ import clsx from "clsx"
 import type { FC } from "react"
 import { Fragment } from "react"
 
-export type SelectBoxItem = {
-  name: string
-  secondary?: string
-}
+import { BaseCredentialProperty } from "lib/credential-fns"
 
-type Props = {
+type Props<T> = {
   label?: string
-  items: SelectBoxItem[]
-  selected: SelectBoxItem
-  setSelected: (item: SelectBoxItem) => void
+  items: T[]
+  selected: T
+  setSelected: (item: T) => void
 }
 
-const SelectBox: FC<Props> = ({ label, items, selected, setSelected }) => {
+const SelectBox: FC<Props<BaseCredentialProperty>> = ({
+  label,
+  items,
+  selected,
+  setSelected
+}) => {
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (

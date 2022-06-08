@@ -1,11 +1,18 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline"
-import React, { useState } from "react"
-import type { FC, ReactNode } from "react"
+import Tippy from "@tippyjs/react"
+import clsx from "clsx"
+import { useState } from "react"
+import type { FC } from "react"
+import toast from "react-hot-toast"
 
-import { formatDidKey, formatSecret, ISSUERS } from "lib/credential-fns"
+import {
+  formatDidKey,
+  formatSecret,
+  CredentialIssuer
+} from "lib/credential-fns"
 
 type Props = {
-  issuer: typeof ISSUERS[0]
+  issuer: CredentialIssuer
 }
 
 const Issuer: FC<Props> = ({ issuer }) => {
@@ -13,7 +20,7 @@ const Issuer: FC<Props> = ({ issuer }) => {
 
   const copy = async (text: string) => {
     await navigator.clipboard.writeText(text)
-    alert("Text copied")
+    toast("Copied")
   }
 
   return (
@@ -21,21 +28,33 @@ const Issuer: FC<Props> = ({ issuer }) => {
       <li key={issuer.name} className="flex py-4 space-x-8">
         <div>
           <p className="text-lg font-medium text-gray-900">{issuer.name}</p>
+          <span
+            className={clsx(
+              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium",
+              issuer.isTrusted
+                ? "bg-green-100 text-green-800"
+                : "bg-gray-100 text-gray-800"
+            )}
+          >
+            {issuer.isTrusted ? "Trusted" : "Untrusted"}
+          </span>
         </div>
         <div className="flex flex-col space-y-2 overflow-hidden">
           <div>
             <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
               Did Key
             </p>
-            <p
-              className="font-mono text-sm text-gray-500 cursor-pointer overflow-ellipsis hover:text-gray-800"
-              onClick={(e) => {
-                e.preventDefault()
-                copy(issuer.did.key)
-              }}
-            >
-              {formatDidKey(issuer.did.key)}
-            </p>
+            <Tippy content={<span className="text-lg">Click to copy</span>}>
+              <p
+                className="font-mono text-sm text-gray-500 cursor-pointer overflow-ellipsis hover:text-gray-800"
+                onClick={(e) => {
+                  e.preventDefault()
+                  copy(issuer.did.key)
+                }}
+              >
+                {formatDidKey(issuer.did.key)}
+              </p>
+            </Tippy>
           </div>
           <div>
             <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
@@ -58,15 +77,19 @@ const Issuer: FC<Props> = ({ issuer }) => {
 
               <p className="flex">
                 {secretVisible ? (
-                  <span
-                    className="cursor-pointer hover:text-gray-800"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      copy(issuer.did.secret)
-                    }}
+                  <Tippy
+                    content={<span className="text-lg">Click to copy</span>}
                   >
-                    {formatSecret(issuer.did.secret)}
-                  </span>
+                    <span
+                      className="cursor-pointer hover:text-gray-800"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        copy(issuer.did.secret)
+                      }}
+                    >
+                      {formatSecret(issuer.did.secret)}
+                    </span>
+                  </Tippy>
                 ) : (
                   <span>•••••••••••••••</span>
                 )}

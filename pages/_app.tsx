@@ -1,8 +1,10 @@
 import "../styles/globals.css"
+import "tippy.js/dist/tippy.css"
 import { DefaultSeo } from "next-seo"
 import type { AppProps } from "next/app"
 import Head from "next/head"
 import { FC } from "react"
+import { Toaster } from "react-hot-toast"
 
 import Layout from "components/layout/Layout"
 
@@ -43,6 +45,11 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
       />
 
       <Layout>
+        <Toaster
+          toastOptions={{
+            style: { borderRadius: "10px", background: "#333", color: "#fff" }
+          }}
+        />
         <Component {...pageProps} />
       </Layout>
     </>
