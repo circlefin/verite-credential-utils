@@ -1,6 +1,12 @@
 import { NextApiHandler } from "next"
 import { buildCredentialOffer, buildKycAmlManifest } from "verite"
 
+import {
+  findCredentialIssuer,
+  findCredentialStatus,
+  findCredentialType
+} from "lib/credential-fns"
+
 /**
  * Endpoint for initializing the Credential Exchange.
  *
@@ -9,15 +15,15 @@ import { buildCredentialOffer, buildKycAmlManifest } from "verite"
  * offer for the client mobile wallet to scan.
  */
 const endpoint: NextApiHandler = (req, res) => {
-  const type = req.query.type as string
-  const issuer = req.query.issuer as string
-  const status = req.query.status as string
+  const type = findCredentialType(req.query.type as string)
+  const issuer = findCredentialIssuer(req.query.issuer as string)
+  const status = findCredentialStatus(req.query.status as string)
 
-  const id = [type, issuer, status].join("-")
+  const id = [type.id, issuer.id, status.id].join("-")
 
   const manifest = buildKycAmlManifest({
-    id: process.env.ISSUER_DID_1 as string,
-    name: "Verite"
+    id: issuer.did.key,
+    name: issuer.name
   })
 
   // Wrap the manifest with additional metadata, such as the URL to post the
@@ -28,7 +34,7 @@ const endpoint: NextApiHandler = (req, res) => {
   const wrapper = buildCredentialOffer(
     id,
     manifest,
-    `${process.env.HOST}/api/credentials/${req.query.token}`
+    `${process.env.HOST}/api/credentials/${id}`
   )
 
   res.status(200).json(wrapper)

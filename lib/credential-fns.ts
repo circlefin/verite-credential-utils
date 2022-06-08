@@ -30,9 +30,9 @@ export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
     secondary: "Trusted",
     isTrusted: true,
     did: {
-      key: "did:key:z6MkmorDwcWwVU1BQgdw6jQkTErX92TCDYUw7wrDzGMSzUKQ",
+      key: "did:key:z6Mkemh9X2XPtmRU3CU4S52Z68fkVfM1odRoFhnkJnuEvSnk",
       secret:
-        "952fac0034f249fd42b9e5fb79cf100e54f17040078d501d697faedb12ebf9f56d4812049f9d8906f1aed5535026031a9fdd02f6836a7902fb7457bf2184d32f"
+        "8b5d070d9edf63683a4e493b52aeacdc45a3fcb64c2192a8a809a434a7b4e63904b8d673ced9ec999ab3b5a5f49ed0ced7350f84d3a826a4b6acbb3cec5b0439"
     }
   },
   {
@@ -41,9 +41,9 @@ export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
     secondary: "Untrusted",
     isTrusted: false,
     did: {
-      key: "did:key:z6MkgDmGToSzwjJeSJ19ktfuW3sqSeauf99NrWwkbi7XixGP",
+      key: "did:key:z6MknK7ajENGkMcuode8RZm8wiBTfzcrWgAyzYHxH63egiU3",
       secret:
-        "84c758575fb16960695dd2bc4a931cc60e35ef4e9a3c7d99f347edc2b221e45a1a4248ab24284318a1c115aaba12381e7554de470ed0b2dd9ee8c1bf6e428880"
+        "94fb2014d2f061b6f5d3b6e669f09e519b1c6139b27ff4c7e93dbed875c8ea9c74c74795e8f952d728c76f3588fca0269279554c477efc1567343fb0e1c96dcc"
     }
   }
 ]

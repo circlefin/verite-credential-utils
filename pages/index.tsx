@@ -92,9 +92,12 @@ const Page: NextPage = () => {
           className="mt-4 border-t border-b border-gray-200 divide-y divide-gray-200"
         >
           {credentials.map((credential, i) => (
-            <li key={i} className="flex flex-col py-4 space-x-3">
+            <li
+              key={i}
+              className="flex flex-col py-4 space-x-3 cursor-pointer group"
+            >
               <a
-                className="flex items-center justify-between space-x-3 cursor-pointer"
+                className="flex items-center justify-between space-x-3"
                 onClick={(e) => {
                   e.preventDefault()
                   credential === selectedCredential
@@ -127,7 +130,7 @@ const Page: NextPage = () => {
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <span className="inline-flex items-center px-3 py-2 space-x-2 bg-gray-100 border border-transparent rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <span className="inline-flex items-center px-3 py-2 space-x-2 bg-gray-100 border rounded-full group-hover:bg-gray-200">
                     {i === credentials.length - 1 ? (
                       <>
                         {" "}
