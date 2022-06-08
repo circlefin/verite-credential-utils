@@ -1,4 +1,5 @@
 import Tippy from "@tippyjs/react"
+import Link from "next/link"
 import QRCodeReact from "qrcode.react"
 import { FC, useMemo } from "react"
 import { challengeTokenUrlWrapper } from "verite"
@@ -24,29 +25,33 @@ const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
   }, [credentialType, issuer, status])
 
   return (
-    <ClientSideOnly>
-      <div className="flex flex-col items-center justify-center space-y-2">
-        <Tippy
-          content={
-            <span className="text-lg">Scan this code with your Wallet</span>
-          }
-        >
-          <div>
-            <QRCodeReact
-              value={JSON.stringify(challenge)}
-              className="w-full"
-              renderAs="svg"
-            />
-          </div>
-        </Tippy>
-        <input
-          type="text"
-          value={JSON.stringify(challenge)}
-          readOnly
-          className="w-48 font-mono text-xs rounded outline-none bg-gray-50"
-        />
-      </div>
-    </ClientSideOnly>
+    <div className="flex flex-col items-center justify-center space-y-2">
+      <Tippy
+        content={
+          <span className="text-lg">Scan this code with your Wallet</span>
+        }
+      >
+        <div>
+          <Link href={challenge.challengeTokenUrl}>
+            <a target="_blank">
+              <ClientSideOnly>
+                <QRCodeReact
+                  value={JSON.stringify(challenge)}
+                  className="w-full"
+                  renderAs="svg"
+                />
+              </ClientSideOnly>
+            </a>
+          </Link>
+        </div>
+      </Tippy>
+      <input
+        type="text"
+        value={JSON.stringify(challenge)}
+        readOnly
+        className="w-48 font-mono text-xs rounded outline-none bg-gray-50"
+      />
+    </div>
   )
 }
 

@@ -19,14 +19,18 @@ const Issuer: FC<Props> = ({ issuer }) => {
   const [secretVisible, setSecretVisible] = useState(false)
 
   const copy = async (text: string) => {
-    await navigator.clipboard.writeText(text)
+    if ("clipboard" in navigator) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      document.execCommand("copy", true, text)
+    }
     toast("Copied")
   }
 
   return (
     <>
       <li key={issuer.name} className="flex py-4 space-x-8">
-        <div>
+        <div className="w-1/4">
           <p className="text-lg font-medium text-gray-900">{issuer.name}</p>
           <span
             className={clsx(
@@ -41,7 +45,7 @@ const Issuer: FC<Props> = ({ issuer }) => {
         </div>
         <div className="flex flex-col space-y-2 overflow-hidden">
           <div>
-            <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <p className="text-xs font-semibold tracking-wide text-gray-800 uppercase">
               Did Key
             </p>
             <Tippy content={<span className="text-lg">Click to copy</span>}>
@@ -57,7 +61,7 @@ const Issuer: FC<Props> = ({ issuer }) => {
             </Tippy>
           </div>
           <div>
-            <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <p className="text-xs font-semibold tracking-wide text-gray-800 uppercase">
               Secret
             </p>
             <div className="flex items-center space-x-2 font-mono text-sm text-gray-500 overflow-ellipsis">
