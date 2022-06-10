@@ -1,4 +1,4 @@
-import { buildCredentialOffer, buildKycAmlManifest } from "verite"
+import { buildCredentialOffer } from "verite"
 
 import { handler } from "lib/api-fns"
 import {
@@ -7,6 +7,7 @@ import {
   findCredentialType
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
+import { generateManifest } from "lib/manifest-fns"
 
 /**
  * Endpoint for initializing the Credential Exchange.
@@ -21,11 +22,7 @@ const endpoint = handler((req, res) => {
   const status = findCredentialStatus(req.query.status as string)
 
   const id = [type.id, issuer.id, status.id].join("-")
-
-  const manifest = buildKycAmlManifest({
-    id: issuer.did.key,
-    name: issuer.name
-  })
+  const manifest = generateManifest(type.id, issuer)
 
   // Wrap the manifest with additional metadata, such as the URL to post the
   // request to, so the mobile wallet knows how to request the credential.

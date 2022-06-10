@@ -10,7 +10,7 @@ type Props<T> = {
   label?: string
   items: T[]
   selected: T
-  setSelected: (item: T) => void
+  setSelected: (item: never) => void
 }
 
 const SelectBox: FC<Props<BaseCredentialProperty>> = ({

@@ -2,15 +2,15 @@ import {
   buildAndSignFulfillment,
   buildIssuer,
   decodeCredentialApplication,
-  decodeVerifiablePresentation,
-  KYCAMLAttestation
+  decodeVerifiablePresentation
 } from "verite"
 
 import { handler } from "lib/api-fns"
+import { generateAttestation } from "lib/attestation-fns"
 import {
   findCredentialType,
-  findCredentialIssuer,
-  findCredentialStatus
+  findCredentialIssuer
+  // findCredentialStatus
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
 
@@ -24,7 +24,7 @@ import { apiDebug } from "lib/debug"
 const endpoint = handler(async (req, res) => {
   const type = findCredentialType(req.query.type as string)
   const issuerInfo = findCredentialIssuer(req.query.issuer as string)
-  const status = findCredentialStatus(req.query.status as string)
+  // const status = findCredentialStatus(req.query.status as string)
 
   /**
    * Get signer (issuer)
@@ -47,26 +47,14 @@ const endpoint = handler(async (req, res) => {
   /**
    * Generate the attestation.
    */
-
-  const attestation: KYCAMLAttestation =
-    type.id === "kycaml"
-      ? {
-          type: "KYCAMLAttestation",
-          process:
-            "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
-          approvalDate: new Date().toISOString()
-        }
-      : {
-          type: "KYCAMLAttestation", // TODO: change to KYB
-          process: "https://demos.verite.id/schemas/definitions/1.0.0/kyb/usa",
-          approvalDate: new Date().toISOString()
-        }
+  const attestation = await generateAttestation(type.id)
+  apiDebug("Attestation", JSON.stringify(attestation, null, 2))
 
   // Generate the Verifiable Presentation
   const presentation = await buildAndSignFulfillment(
     issuer,
     application,
-    attestation // TODO: Update this method signature to allow for KYB, etc
+    attestation
   )
 
   const decoded = await decodeVerifiablePresentation(presentation)
