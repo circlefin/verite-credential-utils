@@ -39,11 +39,6 @@ export const encodedRevocationList = async (issuer: CredentialIssuer) => {
 }
 
 /**
- * Select a random revocation list and a random index from that list
- * to store the revocation status.
- *
- * Each revocable credential requires that we provide it a unique index in a list.
- *
  * @returns a revocation list status containing a list and index
  */
 export const generateRevocationListStatus = async (
