@@ -36,6 +36,12 @@ There are several scripts included to help improve your development experience:
 - `npm test`: Runs the unit tests.
 - `npm run build`: Builds the application for production.
 
+### Environment variables
+
+Environment variables are stored in `.env` locally, which is ignored by source control. The default variables are set up during the `npm run setup` script.
+
+When running locally, you will likely want to change the `HOSTNAME` variable in `.env` to your local IP address, which will allow the mobile wallet to properly connect to the server.
+
 ### Visual Studio Code
 
 This project includes some default settings for Visual Studio code, including auto-format (using Prettier) upon save. It also includes a list of recommended extensions.
