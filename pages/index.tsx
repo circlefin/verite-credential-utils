@@ -25,7 +25,7 @@ const credentials = [
     credential: {
       type: findCredentialType("kycaml"),
       issuer: findCredentialIssuer("centre"),
-      status: findCredentialStatus("approved")
+      status: findCredentialStatus("active")
     }
   },
   {
@@ -52,7 +52,7 @@ const credentials = [
     credential: {
       type: findCredentialType("kycaml"),
       issuer: findCredentialIssuer("centre"),
-      status: findCredentialStatus("approved")
+      status: findCredentialStatus("active")
     }
   }
 ]

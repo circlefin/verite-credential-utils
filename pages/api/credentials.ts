@@ -9,8 +9,9 @@ import { handler } from "lib/api-fns"
 import { generateAttestation } from "lib/attestation-fns"
 import {
   findCredentialType,
-  findCredentialIssuer
-  // findCredentialStatus
+  findCredentialIssuer,
+  findCredentialStatus,
+  expirationDateForStatus
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
 
@@ -22,9 +23,13 @@ import { apiDebug } from "lib/debug"
  * offer for the client mobile wallet to scan.
  */
 const endpoint = handler(async (req, res) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" })
+  }
+
   const type = findCredentialType(req.query.type as string)
   const issuerInfo = findCredentialIssuer(req.query.issuer as string)
-  // const status = findCredentialStatus(req.query.status as string)
+  const status = findCredentialStatus(req.query.status as string)
 
   /**
    * Get signer (issuer)
@@ -54,7 +59,10 @@ const endpoint = handler(async (req, res) => {
   const presentation = await buildAndSignFulfillment(
     issuer,
     application,
-    attestation
+    attestation,
+    {
+      expirationDate: expirationDateForStatus(status)
+    }
   )
 
   const decoded = await decodeVerifiablePresentation(presentation)

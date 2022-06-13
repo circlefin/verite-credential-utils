@@ -1,3 +1,6 @@
+const ONE_MINUTE = 60 * 1000
+const TWO_MONTHS = 2 * 30 * 24 * 60 * 60 * 1000
+
 /**
  *
  */
@@ -89,20 +92,16 @@ export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
  */
 export const CREDENTIAL_STATUSES: CredentialStatus[] = [
   {
-    id: "approved",
-    name: "Approved"
-  },
-  {
-    id: "pending",
-    name: "Pending"
-  },
-  {
-    id: "denied",
-    name: "Denied"
+    id: "active",
+    name: "Active"
   },
   {
     id: "expired",
     name: "Expired"
+  },
+  {
+    id: "expiring-1min",
+    name: "Expires in 1 minute"
   },
   {
     id: "revoked",
@@ -155,4 +154,20 @@ export const formatDidKey = (str: string) => {
  */
 export const formatSecret = (str: string) => {
   return `${str.slice(0, 16)}...${str.slice(-16)}`
+}
+
+/**
+ * Determine the expiration date to use for this credential.
+ */
+export const expirationDateForStatus = (
+  status: CredentialStatus
+): Date | undefined => {
+  switch (status.id) {
+    case "active":
+      return new Date(Date.now() + TWO_MONTHS)
+    case "expired":
+      return new Date(Date.now() - TWO_MONTHS)
+    case "expiring-1min":
+      return new Date(Date.now() + ONE_MINUTE)
+  }
 }
