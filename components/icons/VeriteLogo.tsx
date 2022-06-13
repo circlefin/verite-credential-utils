@@ -1,5 +1,5 @@
-import type { FC, SVGProps } from "react"
 import clsx from "clsx"
+import type { FC, SVGProps } from "react"
 
 const VeriteLogo: FC<SVGProps<SVGSVGElement>> = ({ className, ...props }) => {
   return (

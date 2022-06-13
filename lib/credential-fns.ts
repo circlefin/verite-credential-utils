@@ -1,12 +1,27 @@
+/**
+ *
+ */
 export type BaseCredentialProperty = {
   id: string
   name: string
   secondary?: string
 }
 
-export type CredentialType = BaseCredentialProperty
+/**
+ *
+ */
+export type CredentialType = BaseCredentialProperty & {
+  type: string
+}
+
+/**
+ *
+ */
 export type CredentialStatus = BaseCredentialProperty
 
+/**
+ *
+ */
 export type CredentialIssuer = BaseCredentialProperty & {
   isTrusted: boolean
   did: {
@@ -15,14 +30,35 @@ export type CredentialIssuer = BaseCredentialProperty & {
   }
 }
 
+/**
+ *
+ */
 export const CREDENTIAL_TYPES: CredentialType[] = [
   {
     id: "kycaml",
-    name: "KYC/AML Attestation"
+    name: "KYC/AML Attestation",
+    type: "KYCAMLAttestation"
   },
-  { id: "kyb", name: "KYB" }
+  {
+    id: "kybaml",
+    name: "KYBP/AML Attestation",
+    type: "KYBPAMLAttestation"
+  },
+  {
+    id: "address",
+    name: "Address Ownership",
+    type: "AddressOwner"
+  },
+  {
+    id: "counterparty",
+    name: "Counterparty Compliance",
+    type: "CounterpartyAccountHolder"
+  }
 ]
 
+/**
+ *
+ */
 export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
   {
     id: "centre",
@@ -48,6 +84,9 @@ export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
   }
 ]
 
+/**
+ *
+ */
 export const CREDENTIAL_STATUSES: CredentialStatus[] = [
   {
     id: "approved",
@@ -71,6 +110,9 @@ export const CREDENTIAL_STATUSES: CredentialStatus[] = [
   }
 ]
 
+/**
+ *
+ */
 export const findCredentialType = (id: string): CredentialType => {
   const item = CREDENTIAL_TYPES.find((t) => t.id === id)
   if (!item) {
@@ -79,6 +121,9 @@ export const findCredentialType = (id: string): CredentialType => {
   return item
 }
 
+/**
+ *
+ */
 export const findCredentialIssuer = (id: string): CredentialIssuer => {
   const item = CREDENTIAL_ISSUERS.find((t) => t.id === id)
   if (!item) {
@@ -87,6 +132,9 @@ export const findCredentialIssuer = (id: string): CredentialIssuer => {
   return item
 }
 
+/**
+ *
+ */
 export const findCredentialStatus = (id: string): CredentialStatus => {
   const item = CREDENTIAL_STATUSES.find((t) => t.id === id)
   if (!item) {
@@ -95,10 +143,16 @@ export const findCredentialStatus = (id: string): CredentialStatus => {
   return item
 }
 
+/**
+ *
+ */
 export const formatDidKey = (str: string) => {
   return `${str.slice(0, 26)}...${str.slice(-16)}`
 }
 
+/**
+ *
+ */
 export const formatSecret = (str: string) => {
   return `${str.slice(0, 16)}...${str.slice(-16)}`
 }
