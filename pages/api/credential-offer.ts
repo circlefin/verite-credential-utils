@@ -8,6 +8,7 @@ import {
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
 import { generateManifest } from "lib/manifest-fns"
+import { fullURL } from "lib/url-fns"
 
 /**
  * Endpoint for initializing the Credential Exchange.
@@ -32,7 +33,9 @@ const endpoint = handler((req, res) => {
   const wrapper = buildCredentialOffer(
     id,
     manifest,
-    `${process.env.HOST}/api/credentials?type=${type.id}&issuer=${issuer.id}&status=${status.id}`
+    fullURL(
+      `/api/credentials?type=${type.id}&issuer=${issuer.id}&status=${status.id}`
+    )
   )
 
   apiDebug(JSON.stringify(wrapper, null, 2))

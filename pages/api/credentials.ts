@@ -14,6 +14,7 @@ import {
   expirationDateForStatus
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
+import { generateRevocationListStatus } from "lib/revocation-fns"
 
 /**
  * Endpoint for initializing the Credential Exchange.
@@ -55,12 +56,18 @@ const endpoint = handler(async (req, res) => {
   const attestation = await generateAttestation(type.id)
   apiDebug("Attestation", JSON.stringify(attestation, null, 2))
 
+  // Build a revocation list and index.
+  const revocationListStatus = await generateRevocationListStatus(
+    status.id === "revoked"
+  )
+
   // Generate the Verifiable Presentation
   const presentation = await buildAndSignFulfillment(
     issuer,
     application,
     attestation,
     {
+      credentialStatus: revocationListStatus,
       expirationDate: expirationDateForStatus(status)
     }
   )
