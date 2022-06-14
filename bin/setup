@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
 
-echo 'Installing dependencies ....'
+echo 'Installing dependencies ...'
 npm install
+
+echo 'Initializing environment variables ...'
+cp -f .env.example .env

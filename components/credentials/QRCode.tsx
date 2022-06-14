@@ -10,6 +10,7 @@ import {
   CredentialStatus,
   CredentialType
 } from "lib/credential-fns"
+import { fullURL } from "lib/url-fns"
 
 type Props = {
   credentialType: CredentialType
@@ -20,7 +21,9 @@ type Props = {
 const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
   const challenge = useMemo(() => {
     return challengeTokenUrlWrapper(
-      `${process.env.NEXT_PUBLIC_HOST}/api/credential-offer?type=${credentialType.id}&issuer=${issuer.id}&status=${status.id}`
+      fullURL(
+        `/api/credential-offer?type=${credentialType.id}&issuer=${issuer.id}&status=${status.id}`
+      )
     )
   }, [credentialType, issuer, status])
 
