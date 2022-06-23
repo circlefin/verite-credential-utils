@@ -20,7 +20,7 @@ const Layout: FC<Props> = ({ children }) => {
   const router = useRouter()
 
   return (
-    <div className="max-w-lg px-4 py-8 mx-auto">
+    <div className="max-w-3xl px-4 py-8 mx-auto">
       <header>
         <nav className="flex flex-row w-full text-sm text-center space-between">
           {navigation.map(({ name, href }) => (

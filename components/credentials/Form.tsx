@@ -5,11 +5,15 @@ import SelectBox from "./form/SelectBox"
 import {
   CredentialIssuer,
   CredentialStatus,
+  CredentialType,
   CREDENTIAL_ISSUERS,
-  CREDENTIAL_STATUSES
+  CREDENTIAL_STATUSES,
+  CREDENTIAL_TYPES
 } from "lib/credential-fns"
 
 type Props = {
+  type: CredentialType
+  setType: (type: CredentialType) => void
   issuer: CredentialIssuer
   setIssuer: (issuer: CredentialIssuer) => void
   status: CredentialStatus
@@ -17,6 +21,8 @@ type Props = {
 }
 
 const CredentialForm: FC<Props> = ({
+  type,
+  setType,
   issuer,
   setIssuer,
   status,
@@ -25,6 +31,15 @@ const CredentialForm: FC<Props> = ({
   return (
     <>
       <form className="flex flex-col space-y-4">
+        <div>
+          <SelectBox
+            label="Credential Type"
+            items={CREDENTIAL_TYPES}
+            selected={type}
+            setSelected={setType}
+          />
+        </div>
+
         <div>
           <SelectBox
             label="Issuer"

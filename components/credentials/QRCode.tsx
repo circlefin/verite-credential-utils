@@ -1,7 +1,7 @@
 import Tippy from "@tippyjs/react"
 import Link from "next/link"
-import QRCodeReact from "qrcode.react"
-import { FC, useMemo } from "react"
+import { QRCodeSVG } from "qrcode.react"
+import { FC, useMemo, useState } from "react"
 import { challengeTokenUrlWrapper } from "verite"
 
 import ClientSideOnly from "components/layout/ClientSideOnly"
@@ -19,6 +19,7 @@ type Props = {
 }
 
 const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
+  const [showContents, setShowContents] = useState(false)
   const challenge = useMemo(() => {
     return challengeTokenUrlWrapper(
       fullURL(
@@ -38,22 +39,35 @@ const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
           <Link href={challenge.challengeTokenUrl}>
             <a target="_blank">
               <ClientSideOnly>
-                <QRCodeReact
+                <QRCodeSVG
                   value={JSON.stringify(challenge)}
-                  className="w-full"
-                  renderAs="svg"
+                  className="w-52 h-52"
                 />
               </ClientSideOnly>
             </a>
           </Link>
         </div>
       </Tippy>
-      <input
-        type="text"
-        value={JSON.stringify(challenge)}
-        readOnly
-        className="w-48 font-mono text-xs rounded outline-none bg-gray-50"
-      />
+
+      {showContents ? (
+        <>
+          <textarea
+            readOnly
+            className="flex-wrap h-48 font-mono text-xs rounded outline-none w-52 bg-gray-50"
+          >
+            {JSON.stringify(challenge)}
+          </textarea>
+        </>
+      ) : (
+        <>
+          <button
+            className="text-sm text-gray-400 underline hover:text-gray-600"
+            onClick={() => setShowContents(!showContents)}
+          >
+            Show Contents
+          </button>
+        </>
+      )}
     </div>
   )
 }
