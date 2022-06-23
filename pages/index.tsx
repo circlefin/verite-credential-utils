@@ -1,8 +1,9 @@
 import type { NextPage } from "next"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { challengeTokenUrlWrapper } from "verite"
 
 import QRCode from "components/credentials/QRCode"
-import SelectBox from "components/credentials/form/SelectBox"
+import SelectBox from "components/form/SelectBox"
 import {
   CredentialIssuer,
   CredentialStatus,
@@ -11,6 +12,7 @@ import {
   CREDENTIAL_STATUSES,
   CREDENTIAL_TYPES
 } from "lib/credential-fns"
+import { fullURL } from "lib/url-fns"
 
 const Page: NextPage = () => {
   const [customType, setCustomType] = useState<CredentialType>(
@@ -22,6 +24,14 @@ const Page: NextPage = () => {
   const [customStatus, setCustomStatus] = useState<CredentialStatus>(
     CREDENTIAL_STATUSES[0]
   )
+
+  const qrCodeContents = useMemo(() => {
+    return challengeTokenUrlWrapper(
+      fullURL(
+        `/api/credential-offer?type=${customType.id}&issuer=${customIssuer.id}&status=${customStatus.id}`
+      )
+    )
+  }, [customType, customIssuer, customStatus])
 
   return (
     <>
@@ -69,9 +79,8 @@ const Page: NextPage = () => {
             </div>
             <div className="text-right sm:w-1/2">
               <QRCode
-                credentialType={customType}
-                issuer={customIssuer}
-                status={customStatus}
+                contents={qrCodeContents}
+                link={qrCodeContents.challengeTokenUrl}
               />
             </div>
           </div>

@@ -4,7 +4,11 @@ import type {
   PresentationDefinition
 } from "verite"
 
-import { CredentialIssuer, findCredentialType } from "./credential-fns"
+import {
+  CredentialIssuer,
+  CredentialType,
+  findCredentialType
+} from "./credential-fns"
 
 const PRESENTATION_DEFINITION: PresentationDefinition = {
   id: "PROOF_OF_CONTROL_PRESENTATION_DEF_ID",
@@ -28,7 +32,7 @@ const PRESENTATION_DEFINITION: PresentationDefinition = {
   ]
 }
 
-const OUTPUT_DESCRIPTORS: Record<string, OutputDescriptor> = {
+const OUTPUT_DESCRIPTORS: Record<CredentialType["id"], OutputDescriptor> = {
   kycaml: {
     id: `kycaml-output-descriptor`,
     schema: [

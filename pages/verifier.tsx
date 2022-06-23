@@ -1,21 +1,18 @@
 import type { NextPage } from "next"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { challengeTokenUrlWrapper } from "verite"
 
 import QRCode from "components/credentials/QRCode"
-import SelectBox from "components/credentials/form/SelectBox"
+import SelectBox from "components/form/SelectBox"
 import {
   CredentialIssuer,
-  CredentialStatus,
   CredentialType,
   CREDENTIAL_ISSUERS,
-  CREDENTIAL_STATUSES,
   CREDENTIAL_TYPES
 } from "lib/credential-fns"
+import { fullURL } from "lib/url-fns"
 
 const VerifierPage: NextPage = () => {
-  const [selectedCredentialType, setSelectedCredentialType] =
-    useState<CredentialType | null>(null)
-
   const [trustedIssuers, setTrustedIssuers] = useState<string[]>(
     CREDENTIAL_ISSUERS.filter((i) => i.isTrusted).map((i) => i.did.key)
   )
@@ -25,12 +22,6 @@ const VerifierPage: NextPage = () => {
   const [customType, setCustomType] = useState<CredentialType>(
     CREDENTIAL_TYPES[0]
   )
-  const [customIssuer, setCustomIssuer] = useState<CredentialIssuer>(
-    CREDENTIAL_ISSUERS[0]
-  )
-  const [customStatus, setCustomStatus] = useState<CredentialStatus>(
-    CREDENTIAL_STATUSES[0]
-  )
 
   const toggleTrustedIssuer = (issuer: CredentialIssuer) => {
     if (trustedIssuers.includes(issuer.did.key)) {
@@ -39,6 +30,17 @@ const VerifierPage: NextPage = () => {
       setTrustedIssuers([issuer.did.key, ...trustedIssuers])
     }
   }
+
+  const qrCodeContents = useMemo(() => {
+    const issuers = trustedIssuers.concat(customTrustedIssuer).filter(Boolean)
+    return challengeTokenUrlWrapper(
+      fullURL(
+        `/api/verification-offer?type=${customType.id}&issuers=${issuers.join(
+          ","
+        )}`
+      )
+    )
+  }, [customType, customTrustedIssuer, trustedIssuers])
 
   return (
     <>
@@ -112,9 +114,8 @@ const VerifierPage: NextPage = () => {
             </div>
             <div className="text-right sm:w-1/2">
               <QRCode
-                credentialType={customType}
-                issuer={customIssuer}
-                status={customStatus}
+                contents={qrCodeContents}
+                link={qrCodeContents.challengeTokenUrl}
               />
             </div>
           </div>

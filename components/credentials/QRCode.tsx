@@ -1,32 +1,16 @@
 import Tippy from "@tippyjs/react"
-import Link from "next/link"
 import { QRCodeSVG } from "qrcode.react"
-import { FC, useMemo, useState } from "react"
-import { challengeTokenUrlWrapper } from "verite"
+import { FC, useState } from "react"
 
 import ClientSideOnly from "components/layout/ClientSideOnly"
-import {
-  CredentialIssuer,
-  CredentialStatus,
-  CredentialType
-} from "lib/credential-fns"
-import { fullURL } from "lib/url-fns"
 
 type Props = {
-  credentialType: CredentialType
-  issuer: CredentialIssuer
-  status: CredentialStatus
+  contents: Record<string, unknown>
+  link?: string
 }
 
-const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
+const QRCode: FC<Props> = ({ contents, link }) => {
   const [showContents, setShowContents] = useState(false)
-  const challenge = useMemo(() => {
-    return challengeTokenUrlWrapper(
-      fullURL(
-        `/api/credential-offer?type=${credentialType.id}&issuer=${issuer.id}&status=${status.id}`
-      )
-    )
-  }, [credentialType, issuer, status])
 
   return (
     <div className="flex flex-col items-center justify-center space-y-2">
@@ -36,16 +20,14 @@ const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
         }
       >
         <div>
-          <Link href={challenge.challengeTokenUrl}>
-            <a target="_blank">
-              <ClientSideOnly>
-                <QRCodeSVG
-                  value={JSON.stringify(challenge)}
-                  className="w-52 h-52"
-                />
-              </ClientSideOnly>
-            </a>
-          </Link>
+          <a href={link} target="_blank" rel="noreferrer">
+            <ClientSideOnly>
+              <QRCodeSVG
+                value={JSON.stringify(contents)}
+                className="w-52 h-52"
+              />
+            </ClientSideOnly>
+          </a>
         </div>
       </Tippy>
 
@@ -54,9 +36,8 @@ const QRCode: FC<Props> = ({ credentialType, issuer, status }) => {
           <textarea
             readOnly
             className="flex-wrap h-48 font-mono text-xs rounded outline-none w-52 bg-gray-50"
-          >
-            {JSON.stringify(challenge)}
-          </textarea>
+            value={JSON.stringify(contents)}
+          />
         </>
       ) : (
         <>
