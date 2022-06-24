@@ -124,12 +124,12 @@ export const CREDENTIAL_STATUSES: CredentialStatus[] = [
     name: "Active"
   },
   {
-    id: "expired",
-    name: "Expired"
+    id: "expiring-1min",
+    name: "Expiring in 1 minute"
   },
   {
-    id: "expiring-1min",
-    name: "Expires in 1 minute"
+    id: "expired",
+    name: "Expired"
   },
   {
     id: "revoked",

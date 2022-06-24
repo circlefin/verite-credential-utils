@@ -23,9 +23,11 @@ export const generateVerificationOffer = (
   /**
    * Ensure the issuer is listed as a trusted issuer here
    */
-  presentationDefinition.input_descriptors[0].constraints?.fields?.push(
-    trustedIssuerConstraint
-  )
+  if (trustedIssuers.length) {
+    presentationDefinition.input_descriptors[0].constraints?.fields?.push(
+      trustedIssuerConstraint
+    )
+  }
 
   return {
     id: credentialType.id,

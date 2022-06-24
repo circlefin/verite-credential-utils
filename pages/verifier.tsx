@@ -1,3 +1,5 @@
+import { InformationCircleIcon } from "@heroicons/react/solid"
+import Tippy from "@tippyjs/react"
 import type { NextPage } from "next"
 import { useMemo, useState } from "react"
 import { challengeTokenUrlWrapper } from "verite"
@@ -58,19 +60,26 @@ const VerifierPage: NextPage = () => {
         <div className="py-4">
           <div className="flex flex-col-reverse space-x-2 space-y-2 sm:flex-row">
             <div className="sm:w-1/2">
-              <form className="flex flex-col space-y-4">
+              <form className="flex flex-col space-y-8">
                 <div>
                   <SelectBox
                     label="Credential Type"
+                    labelTooltip="Pick the type of credential that will be required for verification"
                     items={CREDENTIAL_TYPES}
                     selected={customType}
                     setSelected={setCustomType}
                   />
                 </div>
 
-                <fieldset className="space-y-5">
+                <fieldset className="space-y-4">
                   <legend className="block -mb-2 text-sm font-medium text-gray-700">
-                    Trusted Issuers
+                    <span className="flex items-center space-x-2">
+                      <span>Trusted Issuers</span>
+
+                      <Tippy content="Select the issuer(s) that your verifier should trust, or type a custom one. If none are selected, all issuers will be trusted.">
+                        <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                      </Tippy>
+                    </span>
                   </legend>
                   {CREDENTIAL_ISSUERS.map((issuer, i) => (
                     <div className="relative flex items-start" key={i}>
@@ -110,6 +119,41 @@ const VerifierPage: NextPage = () => {
                     </div>
                   </div>
                 </fieldset>
+
+                <div className="">
+                  <label
+                    htmlFor="wallet"
+                    className="flex justify-between text-sm font-medium text-gray-700"
+                  >
+                    <span className="flex items-center space-x-2">
+                      <span>Wallet Address</span>
+
+                      <Tippy content="If you specify an address, the verifier will return a VerificationResult for submission to the blockchain">
+                        <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                      </Tippy>
+                    </span>
+
+                    <span className="font-light text-gray-400">Optional</span>
+                  </label>
+                  <div className="flex mt-1 rounded-md shadow-sm">
+                    <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                      <input
+                        type="text"
+                        name="wallet"
+                        id="wallt"
+                        autoComplete="crypto"
+                        className="block w-full border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-l-md sm:text-sm"
+                        placeholder="0x"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                      <span>Connect Wallet</span>
+                    </button>
+                  </div>
+                </div>
               </form>
             </div>
             <div className="text-right sm:w-1/2">

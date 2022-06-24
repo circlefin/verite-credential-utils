@@ -52,6 +52,7 @@ const Page: NextPage = () => {
                 <div>
                   <SelectBox
                     label="Credential Type"
+                    labelTooltip="Select the type of credential you want to generate"
                     items={CREDENTIAL_TYPES}
                     selected={customType}
                     setSelected={setCustomType}
@@ -61,6 +62,9 @@ const Page: NextPage = () => {
                 <div>
                   <SelectBox
                     label="Issuer"
+                    labelTooltip={`Select the issuer of this credential. By default '${
+                      CREDENTIAL_ISSUERS.find((c) => c.isTrusted)?.name
+                    }' is the only trusted issuer, but this can be customized on the verifier screen`}
                     items={CREDENTIAL_ISSUERS}
                     selected={customIssuer}
                     setSelected={setCustomIssuer}
@@ -70,6 +74,7 @@ const Page: NextPage = () => {
                 <div>
                   <SelectBox
                     label="Status"
+                    labelTooltip="Select the current status of this credential, either active, expiring, expired, or revoked."
                     items={CREDENTIAL_STATUSES}
                     selected={customStatus}
                     setSelected={setCustomStatus}
