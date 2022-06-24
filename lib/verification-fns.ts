@@ -33,10 +33,14 @@ export const generateVerificationOffer = (
     from: CREDENTIAL_VERIFIERS[0].did.key,
     created_time: new Date().toISOString(),
     expires_time: new Date(Date.now() + 300_000 /* 5 minutes */).toISOString(),
-    reply_url: fullURL(`/api/verifications/${credentialType.id}`),
+    reply_url: fullURL(
+      `/api/verifications/submit?type=${
+        credentialType.id
+      }&issuers=${trustedIssuers.join(",")}`
+    ),
     body: {
-      status_url: fullURL(`/api/verifications/${credentialType.id}/status`),
-      challenge: "challenge",
+      status_url: fullURL(`/api/verifications/${credentialType.id}/status`), // TODO: this doesnt exist
+      challenge: "random-challenge",
       presentation_definition: presentationDefinition
     }
   }
