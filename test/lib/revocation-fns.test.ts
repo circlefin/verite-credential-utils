@@ -31,10 +31,10 @@ test("generateRevocationListStatus builds a non-revoked credential status", asyn
   const status = await generateRevocationListStatus(issuer, false)
 
   expect(status).toEqual({
-    id: `/api/revocation-list?issuer=trusted`,
+    id: `/api/revocation-list?issuer=trusted#0`,
     type: "RevocationList2021Status",
     statusListIndex: "0",
-    statusListCredential: "/api/revocation-list?issuer=trusted#0"
+    statusListCredential: "/api/revocation-list?issuer=trusted"
   })
 })
 

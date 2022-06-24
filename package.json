@@ -25,7 +25,6 @@
     "next-seo": "^5.4.0",
     "qrcode.react": "^3.0.2",
     "react": "18.1.0",
-    "react-animate-height": "^3.0.3",
     "react-dom": "18.1.0",
     "react-hot-toast": "^2.2.0",
     "verite": "^0.0.2"
