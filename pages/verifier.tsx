@@ -1,5 +1,6 @@
 import { InformationCircleIcon } from "@heroicons/react/solid"
 import Tippy from "@tippyjs/react"
+import { ethers } from "ethers"
 import type { NextPage } from "next"
 import { useMemo, useState } from "react"
 import { challengeTokenUrlWrapper } from "verite"
@@ -13,6 +14,12 @@ import {
   CREDENTIAL_TYPES
 } from "lib/credential-fns"
 import { fullURL } from "lib/url-fns"
+
+declare global {
+  interface Window {
+    ethereum?: ethers.providers.ExternalProvider
+  }
+}
 
 const VerifierPage: NextPage = () => {
   const [subjectAddress, setSubjectAddress] = useState<string>("")
@@ -29,6 +36,16 @@ const VerifierPage: NextPage = () => {
       setTrustedIssuers(trustedIssuers.filter((i) => i !== issuer.did.key))
     } else {
       setTrustedIssuers([issuer.did.key, ...trustedIssuers])
+    }
+  }
+
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      await provider.send("eth_requestAccounts", [])
+      const signer = provider.getSigner()
+      const address = await signer.getAddress()
+      setSubjectAddress(address)
     }
   }
 
@@ -159,6 +176,10 @@ const VerifierPage: NextPage = () => {
                     <button
                       type="button"
                       className="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        connectWallet()
+                      }}
                     >
                       <span>Connect Wallet</span>
                     </button>
