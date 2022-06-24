@@ -26,10 +26,14 @@ const Page: NextPage = () => {
   )
 
   const qrCodeContents = useMemo(() => {
+    const params = new URLSearchParams({
+      type: customType.id,
+      issuer: customIssuer.id,
+      status: customStatus.id
+    })
+
     return challengeTokenUrlWrapper(
-      fullURL(
-        `/api/credential-offer?type=${customType.id}&issuer=${customIssuer.id}&status=${customStatus.id}`
-      )
+      fullURL(`/api/credential-offer?${params.toString()}`)
     )
   }, [customType, customIssuer, customStatus])
 

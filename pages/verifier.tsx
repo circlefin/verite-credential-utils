@@ -15,12 +15,11 @@ import {
 import { fullURL } from "lib/url-fns"
 
 const VerifierPage: NextPage = () => {
+  const [subjectAddress, setSubjectAddress] = useState<string>("")
   const [trustedIssuers, setTrustedIssuers] = useState<string[]>(
     CREDENTIAL_ISSUERS.filter((i) => i.isTrusted).map((i) => i.did.key)
   )
-
   const [customTrustedIssuer, setCustomTrustedIssuer] = useState<string>("")
-
   const [customType, setCustomType] = useState<CredentialType>(
     CREDENTIAL_TYPES[0]
   )
@@ -35,14 +34,23 @@ const VerifierPage: NextPage = () => {
 
   const qrCodeContents = useMemo(() => {
     const issuers = trustedIssuers.concat(customTrustedIssuer).filter(Boolean)
+
+    const params = new URLSearchParams({
+      type: customType.id
+    })
+
+    if (issuers.length) {
+      params.append("issuers", issuers.join(","))
+    }
+
+    if (subjectAddress.length) {
+      params.append("subjectAddress", subjectAddress)
+    }
+
     return challengeTokenUrlWrapper(
-      fullURL(
-        `/api/verification-offer?type=${customType.id}&issuers=${issuers.join(
-          ","
-        )}`
-      )
+      fullURL(`/api/verification-offer?${params.toString()}`)
     )
-  }, [customType, customTrustedIssuer, trustedIssuers])
+  }, [customType, customTrustedIssuer, trustedIssuers, subjectAddress])
 
   return (
     <>
@@ -141,6 +149,8 @@ const VerifierPage: NextPage = () => {
                         type="text"
                         name="wallet"
                         id="wallt"
+                        value={subjectAddress}
+                        onChange={(e) => setSubjectAddress(e.target.value)}
                         autoComplete="crypto"
                         className="block w-full border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-l-md sm:text-sm"
                         placeholder="0x"
