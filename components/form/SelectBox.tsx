@@ -1,13 +1,19 @@
 import { Listbox, Transition } from "@headlessui/react"
-import { CheckIcon, SelectorIcon } from "@heroicons/react/solid"
+import {
+  CheckIcon,
+  InformationCircleIcon,
+  SelectorIcon
+} from "@heroicons/react/solid"
+import Tippy from "@tippyjs/react"
 import clsx from "clsx"
 import type { FC } from "react"
 import { Fragment } from "react"
 
-import { BaseCredentialProperty } from "lib/credential-fns"
+import { BaseCredentialProperty } from "lib/constants"
 
 type Props<T> = {
   label?: string
+  labelTooltip?: string
   items: T[]
   selected: T
   setSelected: (item: never) => void
@@ -15,6 +21,7 @@ type Props<T> = {
 
 const SelectBox: FC<Props<BaseCredentialProperty>> = ({
   label,
+  labelTooltip,
   items,
   selected,
   setSelected
@@ -25,7 +32,14 @@ const SelectBox: FC<Props<BaseCredentialProperty>> = ({
         <>
           {label && (
             <Listbox.Label className="block text-sm font-medium text-gray-700">
-              {label}
+              <span className="flex items-center space-x-2">
+                <span>{label}</span>
+                {labelTooltip && (
+                  <Tippy content={labelTooltip}>
+                    <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                  </Tippy>
+                )}
+              </span>
             </Listbox.Label>
           )}
           <div className="relative mt-1">

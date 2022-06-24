@@ -58,6 +58,7 @@ const endpoint = handler(async (req, res) => {
 
   // Build a revocation list and index.
   const revocationListStatus = await generateRevocationListStatus(
+    issuerInfo,
     status.id === "revoked"
   )
 

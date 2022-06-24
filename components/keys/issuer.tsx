@@ -5,14 +5,11 @@ import { useState } from "react"
 import type { FC } from "react"
 import toast from "react-hot-toast"
 
-import {
-  formatDidKey,
-  formatSecret,
-  CredentialIssuer
-} from "lib/credential-fns"
+import { CredentialIssuer, CredentialVerifier } from "lib/constants"
+import { formatDidKey, formatSecret } from "lib/credential-fns"
 
 type Props = {
-  issuer: CredentialIssuer
+  issuer: CredentialIssuer | CredentialVerifier
 }
 
 const Issuer: FC<Props> = ({ issuer }) => {
@@ -32,16 +29,18 @@ const Issuer: FC<Props> = ({ issuer }) => {
       <li key={issuer.name} className="flex py-4 space-x-8">
         <div className="w-1/4">
           <p className="text-lg font-medium text-gray-900">{issuer.name}</p>
-          <span
-            className={clsx(
-              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium",
-              issuer.isTrusted
-                ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-800"
-            )}
-          >
-            {issuer.isTrusted ? "Trusted" : "Untrusted"}
-          </span>
+          {"isTrusted" in issuer && (
+            <span
+              className={clsx(
+                "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium",
+                issuer.isTrusted
+                  ? "bg-green-100 text-green-800"
+                  : "bg-gray-100 text-gray-800"
+              )}
+            >
+              {issuer.isTrusted ? "Trusted" : "Untrusted"}
+            </span>
+          )}
         </div>
         <div className="flex flex-col space-y-2 overflow-hidden">
           <div>
