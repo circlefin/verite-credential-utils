@@ -11,7 +11,7 @@ import {
   CREDENTIAL_ISSUERS,
   CREDENTIAL_STATUSES,
   CREDENTIAL_TYPES
-} from "lib/credential-fns"
+} from "lib/constants"
 import { fullURL } from "lib/url-fns"
 
 const Page: NextPage = () => {
@@ -33,7 +33,7 @@ const Page: NextPage = () => {
     })
 
     return challengeTokenUrlWrapper(
-      fullURL(`/api/credential-offer?${params.toString()}`)
+      fullURL(`/api/credentials/offer?${params.toString()}`)
     )
   }, [customType, customIssuer, customStatus])
 
@@ -77,7 +77,7 @@ const Page: NextPage = () => {
 
                 <div>
                   <SelectBox
-                    label="Status"
+                    label="Credential Status"
                     labelTooltip="Select the current status of this credential, either active, expiring, expired, or revoked."
                     items={CREDENTIAL_STATUSES}
                     selected={customStatus}

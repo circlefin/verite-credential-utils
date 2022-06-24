@@ -5,12 +5,8 @@ import { useState } from "react"
 import type { FC } from "react"
 import toast from "react-hot-toast"
 
-import {
-  formatDidKey,
-  formatSecret,
-  CredentialIssuer,
-  CredentialVerifier
-} from "lib/credential-fns"
+import { CredentialIssuer, CredentialVerifier } from "lib/constants"
+import { formatDidKey, formatSecret } from "lib/credential-fns"
 
 type Props = {
   issuer: CredentialIssuer | CredentialVerifier

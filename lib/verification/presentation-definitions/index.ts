@@ -5,7 +5,7 @@ import counterparty from "./counterparty.json"
 import kybaml from "./kybaml.json"
 import kycaml from "./kycaml.json"
 
-import { CredentialType } from "lib/credential-fns"
+import { CredentialType } from "lib/constants"
 
 export const VERIFICATION_PRESENTATION_DEFINITIONS = {
   kycaml,

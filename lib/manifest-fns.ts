@@ -1,11 +1,8 @@
 import type { CredentialManifest, PresentationDefinition } from "verite"
 
-import {
-  CredentialIssuer,
-  CredentialType,
-  findCredentialType
-} from "./credential-fns"
-import { OUTPUT_DESCRIPTORS } from "./manifest/output-descriptors"
+import { CredentialIssuer, CredentialType } from "lib/constants"
+import { findCredentialType } from "lib/credential-fns"
+import { OUTPUT_DESCRIPTORS } from "lib/manifest/output-descriptors"
 
 const PRESENTATION_DEFINITION: PresentationDefinition = {
   id: "PROOF_OF_CONTROL_PRESENTATION_DEF_ID",

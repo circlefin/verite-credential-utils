@@ -9,7 +9,7 @@ import clsx from "clsx"
 import type { FC } from "react"
 import { Fragment } from "react"
 
-import { BaseCredentialProperty } from "lib/credential-fns"
+import { BaseCredentialProperty } from "lib/constants"
 
 type Props<T> = {
   label?: string

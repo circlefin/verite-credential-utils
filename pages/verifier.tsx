@@ -8,11 +8,15 @@ import { challengeTokenUrlWrapper } from "verite"
 import QRCode from "components/credentials/QRCode"
 import SelectBox from "components/form/SelectBox"
 import {
+  ChainId,
+  CHAIN_IDS,
   CredentialIssuer,
   CredentialType,
   CREDENTIAL_ISSUERS,
-  CREDENTIAL_TYPES
-} from "lib/credential-fns"
+  CREDENTIAL_TYPES,
+  VerificationStatus,
+  VERIFICATION_STATUSES
+} from "lib/constants"
 import { fullURL } from "lib/url-fns"
 
 declare global {
@@ -23,6 +27,7 @@ declare global {
 
 const VerifierPage: NextPage = () => {
   const [subjectAddress, setSubjectAddress] = useState<string>("")
+  const [chainId, setChainId] = useState<ChainId>(CHAIN_IDS[0])
   const [trustedIssuers, setTrustedIssuers] = useState<string[]>(
     CREDENTIAL_ISSUERS.filter((i) => i.isTrusted).map((i) => i.did.key)
   )
@@ -30,6 +35,8 @@ const VerifierPage: NextPage = () => {
   const [customType, setCustomType] = useState<CredentialType>(
     CREDENTIAL_TYPES[0]
   )
+  const [verificationStatus, setVerificationStatus] =
+    useState<VerificationStatus>(VERIFICATION_STATUSES[0])
 
   const toggleTrustedIssuer = (issuer: CredentialIssuer) => {
     if (trustedIssuers.includes(issuer.did.key)) {
@@ -53,7 +60,9 @@ const VerifierPage: NextPage = () => {
     const issuers = trustedIssuers.concat(customTrustedIssuer).filter(Boolean)
 
     const params = new URLSearchParams({
-      type: customType.id
+      type: customType.id,
+      status: verificationStatus.id,
+      chainId: chainId.id
     })
 
     if (issuers.length) {
@@ -65,9 +74,16 @@ const VerifierPage: NextPage = () => {
     }
 
     return challengeTokenUrlWrapper(
-      fullURL(`/api/verification-offer?${params.toString()}`)
+      fullURL(`/api/verifications/offer?${params.toString()}`)
     )
-  }, [customType, customTrustedIssuer, trustedIssuers, subjectAddress])
+  }, [
+    customType,
+    customTrustedIssuer,
+    trustedIssuers,
+    subjectAddress,
+    verificationStatus,
+    chainId
+  ])
 
   return (
     <>
@@ -165,7 +181,7 @@ const VerifierPage: NextPage = () => {
                       <input
                         type="text"
                         name="wallet"
-                        id="wallt"
+                        id="wallet"
                         value={subjectAddress}
                         onChange={(e) => setSubjectAddress(e.target.value)}
                         autoComplete="crypto"
@@ -184,6 +200,26 @@ const VerifierPage: NextPage = () => {
                       <span>Connect Wallet</span>
                     </button>
                   </div>
+                </div>
+
+                <div>
+                  <SelectBox
+                    label="Chain"
+                    labelTooltip="Select the chain for which the verification result should be built"
+                    items={CHAIN_IDS}
+                    selected={chainId}
+                    setSelected={setChainId}
+                  />
+                </div>
+
+                <div>
+                  <SelectBox
+                    label="Status Endpoint Response"
+                    labelTooltip="Select what the status endpoint should return. Since this example is stateless, the status endpoint is stubbed out"
+                    items={VERIFICATION_STATUSES}
+                    selected={verificationStatus}
+                    setSelected={setVerificationStatus}
+                  />
                 </div>
               </form>
             </div>

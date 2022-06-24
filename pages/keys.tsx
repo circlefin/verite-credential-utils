@@ -1,7 +1,7 @@
 import type { NextPage } from "next"
 
 import Issuer from "components/keys/issuer"
-import { CREDENTIAL_ISSUERS, CREDENTIAL_VERIFIERS } from "lib/credential-fns"
+import { CREDENTIAL_ISSUERS, CREDENTIAL_VERIFIERS } from "lib/constants"
 
 const Page: NextPage = () => {
   return (

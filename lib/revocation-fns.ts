@@ -6,7 +6,8 @@ import {
   RevocationListCredential
 } from "verite"
 
-import { CredentialIssuer } from "./credential-fns"
+import { CredentialIssuer } from "lib/constants"
+import { fullURL } from "lib/url-fns"
 
 const REVOKED_INDEX = 42
 const STATUS_LIST = [REVOKED_INDEX]
@@ -19,7 +20,7 @@ export const revocationList = async (
 ): Promise<RevocationListCredential> => {
   const list = await generateRevocationList({
     statusList: STATUS_LIST,
-    url: `${process.env.HOST}/api/revocation-list?issuer=${issuer.id}`,
+    url: fullURL(`/api/revocation-list?issuer=${issuer.id}`),
     issuer: issuer.did.key,
     signer: buildIssuer(issuer.did.key, issuer.did.secret)
   })
@@ -30,7 +31,7 @@ export const revocationList = async (
 export const encodedRevocationList = async (issuer: CredentialIssuer) => {
   const list = await generateEncodedRevocationList({
     statusList: STATUS_LIST,
-    url: `${process.env.HOST}/api/revocation-list?issuer=${issuer.id}`,
+    url: fullURL(`/api/revocation-list?issuer=${issuer.id}`),
     issuer: issuer.did.key,
     signer: buildIssuer(issuer.did.key, issuer.did.secret)
   })
@@ -42,14 +43,15 @@ export const encodedRevocationList = async (issuer: CredentialIssuer) => {
  * @returns a revocation list status containing a list and index
  */
 export const generateRevocationListStatus = async (
+  issuer: CredentialIssuer,
   isRevoked: boolean
 ): Promise<RevocationList2021Status> => {
   const index = isRevoked ? REVOKED_INDEX : 0
 
   return {
-    id: `list#${index}`,
+    id: fullURL(`/api/revocation-list?issuer=${issuer.id}#${index}`),
     type: "RevocationList2021Status",
     statusListIndex: index.toString(),
-    statusListCredential: "list"
+    statusListCredential: fullURL(`/api/revocation-list?issuer=${issuer.id}`)
   }
 }

@@ -1,7 +1,7 @@
 import { BitBuffer } from "bit-buffers"
 import { decodeVerifiableCredential } from "verite"
 
-import { CREDENTIAL_ISSUERS } from "lib/credential-fns"
+import { CREDENTIAL_ISSUERS } from "lib/constants"
 import handler from "pages/api/revocation-list"
 import { testHandler } from "test/support/mocks"
 

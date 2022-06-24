@@ -1,7 +1,7 @@
 import { BitBuffer } from "bit-buffers"
-import { decodeVerifiableCredential, RevocationList2021Status } from "verite"
+import { decodeVerifiableCredential } from "verite"
 
-import { CREDENTIAL_ISSUERS } from "lib/credential-fns"
+import { CREDENTIAL_ISSUERS } from "lib/constants"
 import {
   encodedRevocationList,
   generateRevocationListStatus,
@@ -28,23 +28,23 @@ test("encodedRevocationList returns a JWT encoded revocation list", async () => 
 })
 
 test("generateRevocationListStatus builds a non-revoked credential status", async () => {
-  const status = await generateRevocationListStatus(false)
+  const status = await generateRevocationListStatus(issuer, false)
 
   expect(status).toEqual({
-    id: `list#0`,
+    id: `/api/revocation-list?issuer=trusted`,
     type: "RevocationList2021Status",
     statusListIndex: "0",
-    statusListCredential: "list"
+    statusListCredential: "/api/revocation-list?issuer=trusted#0"
   })
 })
 
 test("generateRevocationListStatus builds a revoked credential status (index 42)", async () => {
-  const status = await generateRevocationListStatus(true)
+  const status = await generateRevocationListStatus(issuer, true)
 
   expect(status).toEqual({
-    id: `list#42`,
+    id: `/api/revocation-list?issuer=trusted#42`,
     type: "RevocationList2021Status",
     statusListIndex: "42",
-    statusListCredential: "list"
+    statusListCredential: "/api/revocation-list?issuer=trusted"
   })
 })

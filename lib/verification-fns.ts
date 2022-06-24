@@ -1,16 +1,33 @@
-import { CredentialType, CREDENTIAL_VERIFIERS } from "./credential-fns"
-import { fullURL } from "./url-fns"
-import { VERIFICATION_PRESENTATION_DEFINITIONS } from "./verification/presentation-definitions"
+import {
+  CredentialType,
+  CREDENTIAL_VERIFIERS,
+  VerificationStatus
+} from "lib/constants"
+import { fullURL } from "lib/url-fns"
+import { VERIFICATION_PRESENTATION_DEFINITIONS } from "lib/verification/presentation-definitions"
+
+type GenerateVerificationOfferParams = {
+  credentialType: CredentialType
+  trustedIssuers: string[]
+  statusEndpointResult: VerificationStatus
+  subjectAddress?: string
+  chainId?: string
+}
 
 /**
  * Generate a Presentation Definition for a verification request
  */
-export const generateVerificationOffer = (
-  credentialType: CredentialType,
-  trustedIssuers: string[]
-) => {
-  const presentationDefinition =
-    VERIFICATION_PRESENTATION_DEFINITIONS[credentialType.id]
+export const generateVerificationOffer = ({
+  credentialType,
+  trustedIssuers,
+  statusEndpointResult,
+  subjectAddress,
+  chainId
+}: GenerateVerificationOfferParams) => {
+  // Deep clone the Presentation Definition
+  const presentationDefinition = JSON.parse(
+    JSON.stringify(VERIFICATION_PRESENTATION_DEFINITIONS[credentialType.id])
+  )
   const trustedIssuerConstraint = {
     path: ["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"],
     purpose: "We can only verify credentials attested by a trusted authority.",
@@ -29,19 +46,32 @@ export const generateVerificationOffer = (
     )
   }
 
+  const params = new URLSearchParams({
+    type: credentialType.id,
+    status: statusEndpointResult.id
+  })
+
+  if (trustedIssuers.length) {
+    params.append("issuers", trustedIssuers.join(","))
+  }
+
+  if (subjectAddress) {
+    params.append("subjectAddress", subjectAddress)
+  }
+
+  if (chainId) {
+    params.append("chainId", chainId)
+  }
+
   return {
     id: credentialType.id,
     type: "VerificationRequest",
     from: CREDENTIAL_VERIFIERS[0].did.key,
     created_time: new Date().toISOString(),
     expires_time: new Date(Date.now() + 300_000 /* 5 minutes */).toISOString(),
-    reply_url: fullURL(
-      `/api/verifications/submit?type=${
-        credentialType.id
-      }&issuers=${trustedIssuers.join(",")}`
-    ),
+    reply_url: fullURL(`/api/verifications/submit?${params.toString()}`),
     body: {
-      status_url: fullURL(`/api/verifications/${credentialType.id}/status`), // TODO: this doesnt exist
+      status_url: fullURL(`/api/verifications/status?${params.toString()}`),
       challenge: "random-challenge",
       presentation_definition: presentationDefinition
     }

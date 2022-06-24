@@ -5,7 +5,8 @@ import {
 } from "verite"
 
 import { handler } from "lib/api-fns"
-import { CREDENTIAL_VERIFIERS, findCredentialType } from "lib/credential-fns"
+import { CHAIN_IDS, CREDENTIAL_VERIFIERS } from "lib/constants"
+import { findCredentialType, findVerificationStatus } from "lib/credential-fns"
 import { generateVerificationOffer } from "lib/verification-fns"
 
 /**
@@ -13,16 +14,26 @@ import { generateVerificationOffer } from "lib/verification-fns"
  *
  */
 const endpoint = handler(async (req, res) => {
-  const type = findCredentialType(req.query.type as string)
-  const issuers = req.query.issuers
+  const credentialType = findCredentialType(req.query.type as string)
+  const trustedIssuers = req.query.issuers
     ? (req.query.issuers as string).split(",")
     : []
-  const subjectAddress = req.query.address as string
+  const subjectAddress = req.query.subjectAddress as string
+  const chainId = req.query.chainId as string
+  const statusEndpointResult = findVerificationStatus(
+    req.query.status as string
+  )
 
   const submission: EncodedPresentationSubmission = req.body
 
   // find the verification offer
-  const verificationOffer = generateVerificationOffer(type, issuers)
+  const verificationOffer = generateVerificationOffer({
+    credentialType,
+    trustedIssuers,
+    statusEndpointResult,
+    subjectAddress,
+    chainId
+  })
 
   if (!verificationOffer) {
     // unable to find a verification offer with these params
@@ -42,7 +53,7 @@ const endpoint = handler(async (req, res) => {
   } catch (e) {
     // unable to find a verification offer with these params
     res.status(400).json({
-      status: "invalid",
+      status: "rejected",
       errors: [
         {
           message: (e as Error).message
@@ -56,8 +67,8 @@ const endpoint = handler(async (req, res) => {
     const result = await verificationResult(
       /* subjectAddress: */ subjectAddress,
       /* contractAddress: */ "0xEAE412f2dd33774C8Dec15C0dae465a45d17EFa8",
-      /* signer:*/ CREDENTIAL_VERIFIERS[0].did.secret,
-      /* chainId:*/ 5
+      /* signer:*/ `0x${CREDENTIAL_VERIFIERS[0].did.secret}`,
+      /* chainId:*/ parseInt(chainId ?? CHAIN_IDS[0].id, 10)
     )
 
     res.json({ status: "approved", result })

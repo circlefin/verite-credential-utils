@@ -34,7 +34,7 @@ const endpoint = handler((req, res) => {
     id,
     manifest,
     fullURL(
-      `/api/credentials?type=${type.id}&issuer=${issuer.id}&status=${status.id}`
+      `/api/credentials/submit?type=${type.id}&issuer=${issuer.id}&status=${status.id}`
     )
   )
 
