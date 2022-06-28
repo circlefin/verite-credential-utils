@@ -47,7 +47,8 @@ const endpoint = handler(async (req, res) => {
       submission,
       verificationOffer.body.presentation_definition,
       {
-        challenge: verificationOffer.body.challenge
+        challenge: verificationOffer.body.challenge,
+        skipSchemaValidation: true
       }
     )
   } catch (e) {
