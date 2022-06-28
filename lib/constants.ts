@@ -20,7 +20,7 @@ export type CredentialType = BaseCredentialProperty<
  *
  */
 export type CredentialStatus = BaseCredentialProperty<
-  "active" | "expired" | "expiring-1min" | "revoked"
+  "active" | "expired" | "expiring-1min" | "expiring-5min" | "revoked"
 >
 
 /**
@@ -132,6 +132,10 @@ export const CREDENTIAL_STATUSES: CredentialStatus[] = [
   {
     id: "expiring-1min",
     name: "Expiring in 1 minute"
+  },
+  {
+    id: "expiring-5min",
+    name: "Expiring in 5 minutes"
   },
   {
     id: "expired",
