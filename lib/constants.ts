@@ -166,16 +166,16 @@ export const CHAIN_IDS: ChainId[] = [
   {
     id: "1",
     name: "Ethereum",
-    secondary: "Ethereum Mainnet"
+    secondary: "Ethereum Mainnet (1)"
   },
   {
     id: "5",
     name: "Goerli",
-    secondary: "Ethereum Testnet"
+    secondary: "Ethereum Testnet (5)"
   },
   {
     id: "1337",
     name: "Hardhat",
-    secondary: "Local Network"
+    secondary: "Local Network (1337)"
   }
 ]
