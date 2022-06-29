@@ -1,5 +1,7 @@
 import type { CredentialManifest, PresentationDefinition } from "verite"
 
+import { fullURL } from "./url-fns"
+
 import { CredentialIssuer, CredentialType } from "lib/constants"
 import { findCredentialType } from "lib/credential-fns"
 import { OUTPUT_DESCRIPTORS } from "lib/manifest/output-descriptors"
@@ -19,7 +21,7 @@ const PRESENTATION_DEFINITION: PresentationDefinition = {
         "A Verifiable Presentation establishing proof of identifier control over the DID.",
       schema: [
         {
-          uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
+          uri: fullURL("/api/schemas/ProofOfControl")
         }
       ]
     }

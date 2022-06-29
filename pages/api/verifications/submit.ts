@@ -7,6 +7,8 @@ import {
 import { handler } from "lib/api-fns"
 import { CHAIN_IDS, CREDENTIAL_VERIFIERS } from "lib/constants"
 import { findCredentialType, findVerificationStatus } from "lib/credential-fns"
+import { SCHEMAS } from "lib/schemas"
+import { fullURL } from "lib/url-fns"
 import { generateVerificationOffer } from "lib/verification-fns"
 
 /**
@@ -15,6 +17,11 @@ import { generateVerificationOffer } from "lib/verification-fns"
  */
 const endpoint = handler(async (req, res) => {
   const credentialType = findCredentialType(req.query.type as string)
+  const knownSchemas = {
+    [fullURL(`/api/schemas/${credentialType.type}`)]: SCHEMAS[
+      credentialType.type
+    ] as Record<string, unknown>
+  }
   const trustedIssuers = req.query.issuers
     ? (req.query.issuers as string).split(",")
     : []
@@ -47,7 +54,8 @@ const endpoint = handler(async (req, res) => {
       submission,
       verificationOffer.body.presentation_definition,
       {
-        challenge: verificationOffer.body.challenge
+        challenge: verificationOffer.body.challenge,
+        knownSchemas
       }
     )
   } catch (e) {

@@ -1,9 +1,9 @@
 import { PresentationDefinition } from "verite"
 
-import address from "./address.json"
-import counterparty from "./counterparty.json"
-import kybaml from "./kybaml.json"
-import kycaml from "./kycaml.json"
+import { definition as address } from "./address"
+import { definition as counterparty } from "./counterparty"
+import { definition as kybaml } from "./kybaml"
+import { definition as kycaml } from "./kycaml"
 
 import { CredentialType } from "lib/constants"
 
