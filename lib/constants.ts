@@ -88,7 +88,7 @@ export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
   {
     id: "trusted",
     name: "Centre",
-    secondary: "Trusted",
+    secondary: "Default: Trusted",
     isTrusted: true,
     did: {
       key: "did:key:z6Mkemh9X2XPtmRU3CU4S52Z68fkVfM1odRoFhnkJnuEvSnk",
@@ -98,8 +98,8 @@ export const CREDENTIAL_ISSUERS: CredentialIssuer[] = [
   },
   {
     id: "untrusted",
-    name: "Hax0rz",
-    secondary: "Untrusted",
+    name: "Dark Web Issuer",
+    secondary: "Default: Untrusted",
     isTrusted: false,
     did: {
       key: "did:key:z6MknK7ajENGkMcuode8RZm8wiBTfzcrWgAyzYHxH63egiU3",

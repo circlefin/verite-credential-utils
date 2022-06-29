@@ -4,6 +4,7 @@ import type { NextPage } from "next"
 import { useMemo, useState } from "react"
 import { challengeTokenUrlWrapper } from "verite"
 
+import FAQ, { FAQType } from "components/FAQ"
 import QRCode from "components/credentials/QRCode"
 import SelectBox from "components/form/SelectBox"
 import WalletAddressInput from "components/form/WalletAddressInput"
@@ -18,6 +19,80 @@ import {
   VERIFICATION_STATUSES
 } from "lib/constants"
 import { fullURL } from "lib/url-fns"
+
+const faqs: FAQType[] = [
+  {
+    question: "What is this Sample Verifier?",
+    answer:
+      "This is demo Verifier that can be used to test your Verifiable Credentials in many different configurations.  You can determine which issuers to trust (if any), which credentials to seek, and more."
+  },
+  {
+    question: "How do I scan this QR code?",
+    answer: (
+      <>
+        To scan this QR code, you can run any Verite-compatible wallet. One such
+        wallet is the demo wallet included in the{" "}
+        <a
+          href="https://github.com/centrehq/verite"
+          className="text-blue-500 underline hover:text-blue-600"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Verite GitHub monorepo
+        </a>
+        . Once you clone the repository and run{" "}
+        <span className="p-1 font-mono text-sm font-bold text-white bg-gray-900 rounded whitespace-nowrap">
+          npm run setup
+        </span>
+        , you can run{" "}
+        <span className="p-1 font-mono text-sm font-bold text-white bg-gray-900 rounded whitespace-nowrap">
+          npm run wallet
+        </span>
+        . You can then launch the demo wallet with the{" "}
+        <a
+          href="https://expo.dev/client"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 underline hover:text-blue-600"
+        >
+          Expo Go
+        </a>{" "}
+        app from the App Store.
+      </>
+    )
+  },
+  {
+    question: "Is this safe for production?",
+    answer:
+      "No. Verification performed by this Sample Verifier, and the resulting Verification Results are not safe for production use. They are for testing purposes only and have a high likelihood of colliding with other credentials."
+  },
+  {
+    question: "Where can I learn more about Verite?",
+    answer: (
+      <>
+        You can learn more about Verite at{" "}
+        <a
+          href="https://www.centre.io/verite"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 underline hover:text-blue-600"
+        >
+          the Centre Verite website
+        </a>
+        , or you can jump directly into the{" "}
+        <a
+          href="https://docs.centre.io/verite"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 underline hover:text-blue-600"
+        >
+          the documentation
+        </a>
+        .
+      </>
+    )
+  }
+]
 
 const VerifierPage: NextPage = () => {
   const [subjectAddress, setSubjectAddress] = useState("")
@@ -146,6 +221,16 @@ const VerifierPage: NextPage = () => {
                 </fieldset>
 
                 <div>
+                  <SelectBox
+                    label="Status Endpoint Response"
+                    labelTooltip="Select what the status endpoint should return. Since this example is stateless, the status endpoint is stubbed out"
+                    items={VERIFICATION_STATUSES}
+                    selected={verificationStatus}
+                    setSelected={setVerificationStatus}
+                  />
+                </div>
+
+                <div>
                   <label
                     htmlFor="wallet"
                     className="flex justify-between text-sm font-medium text-gray-700"
@@ -176,16 +261,6 @@ const VerifierPage: NextPage = () => {
                     setSelected={setChainId}
                   />
                 </div>
-
-                <div>
-                  <SelectBox
-                    label="Status Endpoint Response"
-                    labelTooltip="Select what the status endpoint should return. Since this example is stateless, the status endpoint is stubbed out"
-                    items={VERIFICATION_STATUSES}
-                    selected={verificationStatus}
-                    setSelected={setVerificationStatus}
-                  />
-                </div>
               </form>
             </div>
             <div className="text-right sm:w-1/2">
@@ -197,6 +272,8 @@ const VerifierPage: NextPage = () => {
           </div>
         </div>
       </div>
+
+      <FAQ faqs={faqs} />
     </>
   )
 }
