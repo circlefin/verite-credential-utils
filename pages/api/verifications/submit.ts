@@ -75,7 +75,7 @@ const endpoint = handler(async (req, res) => {
     const result = await verificationResult(
       /* subjectAddress: */ subjectAddress,
       /* contractAddress: */ "0xEAE412f2dd33774C8Dec15C0dae465a45d17EFa8",
-      /* signer:*/ `0x${CREDENTIAL_VERIFIERS[0].did.secret}`,
+      /* signer:*/ CREDENTIAL_VERIFIERS[0].privateKey,
       /* chainId:*/ parseInt(chainId ?? CHAIN_IDS[0].id, 10)
     )
 

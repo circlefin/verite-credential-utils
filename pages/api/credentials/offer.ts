@@ -2,6 +2,7 @@ import { buildCredentialOffer } from "verite"
 
 import { handler } from "lib/api-fns"
 import {
+  findChainId,
   findCredentialIssuer,
   findCredentialStatus,
   findCredentialType
@@ -21,8 +22,12 @@ const endpoint = handler((req, res) => {
   const type = findCredentialType(req.query.type as string)
   const issuer = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
+  const chainId =
+    type.id === "address" ? findChainId(req.query.chain as string) : undefined
 
-  const id = [type.id, issuer.id, status.id].join("-")
+  const id = [type.id, issuer.id, status.id, chainId?.type]
+    .filter(Boolean)
+    .join("-")
   const manifest = generateManifest(type.id, issuer)
 
   // Wrap the manifest with additional metadata, such as the URL to post the
@@ -30,12 +35,20 @@ const endpoint = handler((req, res) => {
   // In a production environment, the URL would need to be absolute, but for
   // sake of simplicity we will just use a path since the demo is entirely
   // within the browser.
+  const params = new URLSearchParams({
+    type: type.id,
+    issuer: issuer.id,
+    status: status.id
+  })
+
+  if (chainId) {
+    params.append("chain", chainId.type)
+  }
+
   const wrapper = buildCredentialOffer(
     id,
     manifest,
-    fullURL(
-      `/api/credentials/submit?type=${type.id}&issuer=${issuer.id}&status=${status.id}`
-    )
+    fullURL(`/api/credentials/submit?${params.toString()}`)
   )
 
   apiDebug(JSON.stringify(wrapper, null, 2))

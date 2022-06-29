@@ -39,16 +39,18 @@ export const generateAttestation: GenerateAttestation = async (type, opts) => {
   }
 
   if (type === "address") {
+    if (!opts?.chain) {
+      throw new Error("Missing attribute: chain")
+    }
     const wallet = ethers.Wallet.createRandom()
-    const chain = opts?.chain ?? "ethereum-ropsten"
     const issuanceDate = opts?.issuanceDate ?? new Date()
     const proof = await wallet.signMessage(
-      [chain, wallet.address, issuanceDate.toISOString()].join("")
+      [opts.chain, wallet.address, issuanceDate.toISOString()].join("")
     )
 
     return {
       type: "AddressOwner",
-      chain,
+      chain: opts.chain,
       address: wallet.address,
       proof
     }

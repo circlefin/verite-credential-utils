@@ -48,9 +48,12 @@ export type CredentialVerifier = BaseCredentialProperty & {
     key: string
     secret: string
   }
+  privateKey: string
 }
 
-export type ChainId = BaseCredentialProperty
+export type ChainId = BaseCredentialProperty & {
+  type: string
+}
 
 /**
  *
@@ -114,10 +117,12 @@ export const CREDENTIAL_VERIFIERS: CredentialVerifier[] = [
     id: "verifier",
     name: "Verifier",
     did: {
-      key: "did:key:z6MkvxqbBU1THGfAT7A21mWmo2jZCZ7HMrCd65wgnQDnuQLJ",
+      key: "did:key:z6Mks2UJPUPNfyYnGLnScpyhQX9DGeRjRg1TUUZem5mFbhZR",
       secret:
-        "0x92ade54134006266515bc1d92ca5653a59c3aed708c489b695bf5b799ba34a3ff54ec36abb0e9f3a12f1131d3c39d25268253f6f3c975515abb28ecad083554b"
-    }
+        "059882c94b9b03a3626b1db67272e8e2494728536ba61787e3c74a3752fb6c5fbace444817250deef400bbcda39f3117b1c9b6f33bd0da079daac6444ecd4ca8"
+    },
+    privateKey:
+      "0x1da6847600b0ee25e9ad9a52abbd786dd2502fa4005dd5af9310b7cc7a3b25db"
   }
 ]
 
@@ -166,16 +171,19 @@ export const CHAIN_IDS: ChainId[] = [
   {
     id: "1",
     name: "Ethereum",
-    secondary: "Ethereum Mainnet (1)"
+    secondary: "Ethereum Mainnet (1)",
+    type: "ethereum"
   },
   {
     id: "5",
     name: "Goerli",
-    secondary: "Ethereum Testnet (5)"
+    secondary: "Ethereum Testnet (5)",
+    type: "ethereum-goerli"
   },
   {
     id: "1337",
     name: "Hardhat",
-    secondary: "Local Network (1337)"
+    secondary: "Local Network (1337)",
+    type: "hardhat"
   }
 ]
