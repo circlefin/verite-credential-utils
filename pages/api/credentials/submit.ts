@@ -11,7 +11,8 @@ import {
   findCredentialType,
   findCredentialIssuer,
   findCredentialStatus,
-  expirationDateForStatus
+  expirationDateForStatus,
+  findChainId
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
 import { generateRevocationListStatus } from "lib/revocation-fns"
@@ -31,6 +32,8 @@ const endpoint = handler(async (req, res) => {
   const type = findCredentialType(req.query.type as string)
   const issuerInfo = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
+  const chainId =
+    type.type === "address" ? findChainId(req.query.chain as string) : undefined
 
   /**
    * Get signer (issuer)
@@ -53,7 +56,9 @@ const endpoint = handler(async (req, res) => {
   /**
    * Generate the attestation.
    */
-  const attestation = await generateAttestation(type.id)
+  const attestation = await generateAttestation(type.id, {
+    chain: chainId?.type
+  })
   apiDebug("Attestation", JSON.stringify(attestation, null, 2))
 
   // Build a revocation list and index.

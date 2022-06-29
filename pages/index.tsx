@@ -5,6 +5,8 @@ import { challengeTokenUrlWrapper } from "verite"
 import QRCode from "components/credentials/QRCode"
 import SelectBox from "components/form/SelectBox"
 import {
+  ChainId,
+  CHAIN_IDS,
   CredentialIssuer,
   CredentialStatus,
   CredentialType,
@@ -15,6 +17,7 @@ import {
 import { fullURL } from "lib/url-fns"
 
 const Page: NextPage = () => {
+  const [chainId, setChainId] = useState<ChainId>(CHAIN_IDS[0])
   const [customType, setCustomType] = useState<CredentialType>(
     CREDENTIAL_TYPES[0]
   )
@@ -32,10 +35,14 @@ const Page: NextPage = () => {
       status: customStatus.id
     })
 
+    if (customType.id === "address") {
+      params.append("chain", chainId.type)
+    }
+
     return challengeTokenUrlWrapper(
       fullURL(`/api/credentials/offer?${params.toString()}`)
     )
-  }, [customType, customIssuer, customStatus])
+  }, [customType, customIssuer, customStatus, chainId])
 
   return (
     <>
@@ -62,6 +69,24 @@ const Page: NextPage = () => {
                     setSelected={setCustomType}
                   />
                 </div>
+
+                {customType.id === "address" && (
+                  <>
+                    <div>
+                      <SelectBox
+                        label="Chain"
+                        labelTooltip="Select the chain on which the address exists"
+                        items={CHAIN_IDS}
+                        selected={chainId}
+                        setSelected={setChainId}
+                      />
+                      <span className="text-xs leading-none text-gray-600">
+                        The wallet address will be randomly generated when
+                        building this credential.
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 <div>
                   <SelectBox

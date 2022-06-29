@@ -6,7 +6,9 @@ import {
   CredentialStatus,
   CREDENTIAL_STATUSES,
   VerificationStatus,
-  VERIFICATION_STATUSES
+  VERIFICATION_STATUSES,
+  ChainId,
+  CHAIN_IDS
 } from "./constants"
 
 const ONE_MINUTE = 60 * 1000
@@ -53,6 +55,17 @@ export const findVerificationStatus = (id: string): VerificationStatus => {
   const item = VERIFICATION_STATUSES.find((t) => t.id === id)
   if (!item) {
     throw new Error(`Unknown verification status: ${id}`)
+  }
+  return item
+}
+
+/**
+ *
+ */
+export const findChainId = (id: string): ChainId => {
+  const item = CHAIN_IDS.find((t) => t.type === id)
+  if (!item) {
+    throw new Error(`Unknown chain ID: ${id}`)
   }
   return item
 }

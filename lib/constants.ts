@@ -50,7 +50,9 @@ export type CredentialVerifier = BaseCredentialProperty & {
   }
 }
 
-export type ChainId = BaseCredentialProperty
+export type ChainId = BaseCredentialProperty & {
+  type: string
+}
 
 /**
  *
@@ -166,16 +168,19 @@ export const CHAIN_IDS: ChainId[] = [
   {
     id: "1",
     name: "Ethereum",
-    secondary: "Ethereum Mainnet (1)"
+    secondary: "Ethereum Mainnet (1)",
+    type: "ethereum"
   },
   {
     id: "5",
     name: "Goerli",
-    secondary: "Ethereum Testnet (5)"
+    secondary: "Ethereum Testnet (5)",
+    type: "ethereum-goerli"
   },
   {
     id: "1337",
     name: "Hardhat",
-    secondary: "Local Network (1337)"
+    secondary: "Local Network (1337)",
+    type: "hardhat"
   }
 ]
