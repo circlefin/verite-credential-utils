@@ -10,6 +10,7 @@ import {
 } from "./constants"
 
 const ONE_MINUTE = 60 * 1000
+const FIVE_MINUTES = 5 * ONE_MINUTE
 const TWO_MONTHS = 2 * 30 * 24 * 60 * 60 * 1000
 
 /**
@@ -83,5 +84,7 @@ export const expirationDateForStatus = (
       return new Date(Date.now() - TWO_MONTHS)
     case "expiring-1min":
       return new Date(Date.now() + ONE_MINUTE)
+    case "expiring-5min":
+      return new Date(Date.now() + FIVE_MINUTES)
   }
 }
