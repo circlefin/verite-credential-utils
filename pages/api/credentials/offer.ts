@@ -23,7 +23,7 @@ const endpoint = handler((req, res) => {
   const issuer = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
   const chainId =
-    type.type === "address" ? findChainId(req.query.chain as string) : undefined
+    type.id === "address" ? findChainId(req.query.chain as string) : undefined
 
   const id = [type.id, issuer.id, status.id, chainId?.type]
     .filter(Boolean)

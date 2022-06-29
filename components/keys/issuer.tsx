@@ -14,6 +14,7 @@ type Props = {
 
 const Issuer: FC<Props> = ({ issuer }) => {
   const [secretVisible, setSecretVisible] = useState(false)
+  const [privateKeyVisible, setPrivateKeyVisible] = useState(false)
 
   const copy = async (text: string) => {
     if ("clipboard" in navigator) {
@@ -99,6 +100,49 @@ const Issuer: FC<Props> = ({ issuer }) => {
               </p>
             </div>
           </div>
+
+          {"privateKey" in issuer && (
+            <div>
+              <p className="text-xs font-semibold tracking-wide text-gray-800 uppercase">
+                Private Key
+              </p>
+              <div className="flex items-center space-x-2 font-mono text-sm text-gray-500 overflow-ellipsis">
+                <button
+                  className="p-1 rounded cursor-pointer hover:bg-gray-200"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setPrivateKeyVisible(!privateKeyVisible)
+                  }}
+                >
+                  {privateKeyVisible ? (
+                    <EyeOffIcon className="w-5 h-5" />
+                  ) : (
+                    <EyeIcon className="w-5 h-5" />
+                  )}
+                </button>
+
+                <p className="flex">
+                  {privateKeyVisible ? (
+                    <Tippy
+                      content={<span className="text-lg">Click to copy</span>}
+                    >
+                      <span
+                        className="cursor-pointer hover:text-gray-800"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          copy(issuer.privateKey)
+                        }}
+                      >
+                        {formatSecret(issuer.privateKey)}
+                      </span>
+                    </Tippy>
+                  ) : (
+                    <span>•••••••••••••••</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </li>
     </>
