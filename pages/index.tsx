@@ -10,10 +10,11 @@ import {
   CHAIN_IDS,
   CredentialIssuer,
   CredentialStatus,
-  CredentialType,
+  AttestationTypes,
   CREDENTIAL_ISSUERS,
   CREDENTIAL_STATUSES,
-  CREDENTIAL_TYPES
+  ATTESTATION_TYPES,
+  AttestationKeys
 } from "lib/constants"
 import { fullURL } from "lib/url-fns"
 
@@ -93,8 +94,8 @@ const faqs: FAQType[] = [
 
 const Page: NextPage = () => {
   const [chainId, setChainId] = useState<ChainId>(CHAIN_IDS[0])
-  const [customType, setCustomType] = useState<CredentialType>(
-    CREDENTIAL_TYPES[0]
+  const [customType, setCustomType] = useState<AttestationTypes>(
+    ATTESTATION_TYPES[0]
   )
   const [customIssuer, setCustomIssuer] = useState<CredentialIssuer>(
     CREDENTIAL_ISSUERS[0]
@@ -110,7 +111,7 @@ const Page: NextPage = () => {
       status: customStatus.id
     })
 
-    if (customType.id === "address") {
+    if (customType.id === AttestationKeys.address) {
       params.append("chain", chainId.type)
     }
 
@@ -139,13 +140,13 @@ const Page: NextPage = () => {
                   <SelectBox
                     label="Credential Type"
                     labelTooltip="Select the type of credential you want to generate"
-                    items={CREDENTIAL_TYPES}
+                    items={ATTESTATION_TYPES}
                     selected={customType}
                     setSelected={setCustomType}
                   />
                 </div>
 
-                {customType.id === "address" && (
+                {customType.id === AttestationKeys.address && (
                   <>
                     <div>
                       <SelectBox

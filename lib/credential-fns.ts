@@ -1,6 +1,6 @@
 import {
-  CredentialType,
-  CREDENTIAL_TYPES,
+  AttestationTypes,
+  ATTESTATION_TYPES,
   CredentialIssuer,
   CREDENTIAL_ISSUERS,
   CredentialStatus,
@@ -18,10 +18,10 @@ const TWO_MONTHS = 2 * 30 * 24 * 60 * 60 * 1000
 /**
  *
  */
-export const findCredentialType = (id: string): CredentialType => {
-  const item = CREDENTIAL_TYPES.find((t) => t.id === id)
+export const findAttestationType = (id: string): AttestationTypes => {
+  const item = ATTESTATION_TYPES.find((t) => t.id === id)
   if (!item) {
-    throw new Error(`Unknown credential type: ${id}`)
+    throw new Error(`Unknown attestation type: ${id}`)
   }
   return item
 }

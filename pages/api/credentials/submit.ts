@@ -2,19 +2,22 @@ import {
   buildAndSignFulfillment,
   buildIssuer,
   decodeCredentialApplication,
-  decodeVerifiablePresentation
+  decodeVerifiablePresentation,
+  getCredentialSchemaAsVCObject
 } from "verite"
 
 import { handler } from "lib/api-fns"
-import { generateAttestation } from "lib/attestation-fns"
+import { generateAttestation, getCredentialType } from "lib/attestation-fns"
+import { AttestationKeys } from "lib/constants"
 import {
-  findCredentialType,
+  findAttestationType,
   findCredentialIssuer,
   findCredentialStatus,
   expirationDateForStatus,
   findChainId
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
+import { generateManifest } from "lib/manifest-fns"
 import { generateRevocationListStatus } from "lib/revocation-fns"
 
 /**
@@ -29,11 +32,11 @@ const endpoint = handler(async (req, res) => {
     return res.status(405).json({ error: "Method not allowed" })
   }
 
-  const type = findCredentialType(req.query.type as string)
+  const type = findAttestationType(req.query.type as string)
   const issuerInfo = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
   const chainId =
-    type.id === "address" ? findChainId(req.query.chain as string) : undefined
+    type.id === AttestationKeys.address ? findChainId(req.query.chain as string) : undefined
 
   /**
    * Get signer (issuer)
@@ -46,6 +49,9 @@ const endpoint = handler(async (req, res) => {
     Buffer.from(issuerInfo.did.secret, "hex")
   )
 
+  apiDebug(`Issuer generating manifest for type.id=${type.id}`)
+  const manifest = generateManifest(type, issuerInfo)
+  
   /**
    * Using Presentation Exchange, the client will submit a credential
    * application. Since we are using JWTs to format the data, we first must
@@ -56,10 +62,11 @@ const endpoint = handler(async (req, res) => {
   /**
    * Generate the attestation.
    */
-  const attestation = await generateAttestation(type.id, {
+  const attestation = await generateAttestation(type, {
     chain: chainId?.type
   })
-  apiDebug("Attestation", JSON.stringify(attestation, null, 2))
+  apiDebug(`Generated attestation type=${attestation.type}`)
+  apiDebug("Generated attestation", JSON.stringify(attestation, null, 2))
 
   // Build a revocation list and index.
   const revocationListStatus = await generateRevocationListStatus(
@@ -67,14 +74,20 @@ const endpoint = handler(async (req, res) => {
     status.id === "revoked"
   )
 
+  const credentialType = getCredentialType(attestation.type)
+  apiDebug(`Issuing credential of type=${credentialType}`)
+
   // Generate the Verifiable Presentation
   const presentation = await buildAndSignFulfillment(
     issuer,
-    application,
+    application.holder,
+    manifest,
     attestation,
+    credentialType,
     {
       credentialStatus: revocationListStatus,
-      expirationDate: expirationDateForStatus(status)
+      expirationDate: expirationDateForStatus(status),
+      credentialSchema: getCredentialSchemaAsVCObject(type.definition)
     }
   )
 

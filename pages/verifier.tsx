@@ -12,9 +12,9 @@ import {
   ChainId,
   CHAIN_IDS,
   CredentialIssuer,
-  CredentialType,
+  AttestationTypes,
   CREDENTIAL_ISSUERS,
-  CREDENTIAL_TYPES,
+  ATTESTATION_TYPES,
   VerificationStatus,
   VERIFICATION_STATUSES
 } from "lib/constants"
@@ -101,8 +101,8 @@ const VerifierPage: NextPage = () => {
     CREDENTIAL_ISSUERS.filter((i) => i.isTrusted).map((i) => i.did.key)
   )
   const [customTrustedIssuer, setCustomTrustedIssuer] = useState<string>("")
-  const [customType, setCustomType] = useState<CredentialType>(
-    CREDENTIAL_TYPES[0]
+  const [customType, setCustomType] = useState<AttestationTypes>(
+    ATTESTATION_TYPES[0]
   )
   const [verificationStatus, setVerificationStatus] =
     useState<VerificationStatus>(VERIFICATION_STATUSES[0])
@@ -165,7 +165,7 @@ const VerifierPage: NextPage = () => {
                   <SelectBox
                     label="Credential Type"
                     labelTooltip="Pick the type of credential that will be required for verification"
-                    items={CREDENTIAL_TYPES}
+                    items={ATTESTATION_TYPES}
                     selected={customType}
                     setSelected={setCustomType}
                   />

@@ -6,7 +6,8 @@ import {
 
 import { handler } from "lib/api-fns"
 import { CHAIN_IDS, CREDENTIAL_VERIFIERS } from "lib/constants"
-import { findCredentialType, findVerificationStatus } from "lib/credential-fns"
+import { findAttestationType, findVerificationStatus } from "lib/credential-fns"
+import { apiDebug } from "lib/debug"
 import { SCHEMAS } from "lib/schemas"
 import { fullURL } from "lib/url-fns"
 import { generateVerificationOffer } from "lib/verification-fns"
@@ -16,7 +17,7 @@ import { generateVerificationOffer } from "lib/verification-fns"
  *
  */
 const endpoint = handler(async (req, res) => {
-  const credentialType = findCredentialType(req.query.type as string)
+  const credentialType = findAttestationType(req.query.type as string)
   const knownSchemas = {
     [fullURL(`/api/schemas/${credentialType.type}`)]: SCHEMAS[
       credentialType.type
@@ -35,12 +36,15 @@ const endpoint = handler(async (req, res) => {
 
   // find the verification offer
   const verificationOffer = generateVerificationOffer({
-    credentialType,
+    attestationType: credentialType,
     trustedIssuers,
     statusEndpointResult,
     subjectAddress,
     chainId
   })
+
+  apiDebug(`Generated VerificationOffer with id=${verificationOffer.id}`)
+  apiDebug(JSON.stringify(verificationOffer))
 
   if (!verificationOffer) {
     // unable to find a verification offer with these params
@@ -49,6 +53,8 @@ const endpoint = handler(async (req, res) => {
   }
 
   // verify offer
+  // TODO: may need to fix this
+  apiDebug(`verificationSubmission=${JSON.stringify(submission)}`)
   try {
     await validateVerificationSubmission(
       submission,

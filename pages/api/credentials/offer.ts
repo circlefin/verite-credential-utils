@@ -1,11 +1,12 @@
 import { buildCredentialOffer } from "verite"
 
 import { handler } from "lib/api-fns"
+import { AttestationKeys } from "lib/constants"
 import {
   findChainId,
   findCredentialIssuer,
   findCredentialStatus,
-  findCredentialType
+  findAttestationType
 } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
 import { generateManifest } from "lib/manifest-fns"
@@ -19,16 +20,18 @@ import { fullURL } from "lib/url-fns"
  * offer for the client mobile wallet to scan.
  */
 const endpoint = handler((req, res) => {
-  const type = findCredentialType(req.query.type as string)
+  const type = findAttestationType(req.query.type as string)
+  apiDebug(`Looking up attestation type=${type}`)
   const issuer = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
   const chainId =
-    type.id === "address" ? findChainId(req.query.chain as string) : undefined
+    type.id === AttestationKeys.address ? findChainId(req.query.chain as string) : undefined
 
   const id = [type.id, issuer.id, status.id, chainId?.type]
     .filter(Boolean)
     .join("-")
-  const manifest = generateManifest(type.id, issuer)
+  const manifest = generateManifest(type, issuer)
+  apiDebug(`Manifest id=${manifest.id}`)
 
   // Wrap the manifest with additional metadata, such as the URL to post the
   // request to, so the mobile wallet knows how to request the credential.

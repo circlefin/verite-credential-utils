@@ -1,40 +1,30 @@
-import { fullURL } from "lib/url-fns"
+import { DataDisplayBuilder, OutputDescriptor } from "verite"
 
-export const descriptor = {
-  id: "kycaml-output-descriptor",
-  schema: [
-    {
-      uri: fullURL("/api/schemas/KYCAMLAttestation")
-    }
-  ],
-  name: "Proof of Know Your Customer and Anti-Money Laundering",
-  description:
-    "Attestation that the issuer has completed KYC/AML verification for this subject",
-  display: {
+import { AttestationTypes } from "lib/constants"
+
+export function getOutputDescriptors(issuerName: string, type: AttestationTypes): OutputDescriptor[] {
+
+  const display = new DataDisplayBuilder({
     title: {
-      text: "KYC / AML Attestation"
+      text: `${issuerName} KYC Attestation`
     },
     subtitle: {
-      path: ["$.KYCAMLAttestation.approvalDate"],
+      path: [`$.${type.type}.approvalDate`, `$.vc.${type.type}.approvalDate`],
       fallback: "Includes date of approval"
     },
     description: {
       text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
     },
-    properties: [
-      {
-        label: "Process",
-        path: ["$.KYCAMLAttestation.process"],
-        schema: { type: "string" }
-      },
-      {
-        label: "Approved At",
-        path: ["$.KYCAMLAttestation.approvalDate"],
-        schema: {
-          type: "string",
-          format: "date-time"
-        }
-      }
-    ]
-  }
+  }).addStringProperty("Process", b => b.path([`$.${type.type}.process`]))
+  .addDateTimeProperty("Approved At", b => b.path([`$.${type.type}.approvalDate`]))
+
+  return  [
+    {
+      id: `${type.id}`,
+      schema: type.definition.schema,
+      name: `Proof of KYC from ${issuerName}`,
+      description: `Attestation that ${issuerName} has completed KYC/AML verification for this subject`,
+      display: display.build()
+    }
+  ]
 }

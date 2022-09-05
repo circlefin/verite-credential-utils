@@ -1,3 +1,5 @@
+import { ADDRESS_OWNER_ATTESTATION, AttestationDefinition, COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION, getAttestionDefinition, KYBPAML_ATTESTATION, KYCAML_ATTESTATION } from "verite"
+
 /**
  *
  */
@@ -7,13 +9,21 @@ export type BaseCredentialProperty<T = string> = {
   secondary?: string
 }
 
+export enum AttestationKeys {
+  kycaml = "kycaml",
+  kybpaml =  "kybpaml",
+  address = "addresss",
+  counterparty = "counterparty"
+}
+
 /**
  *
  */
-export type CredentialType = BaseCredentialProperty<
-  "kycaml" | "kybaml" | "address" | "counterparty"
+export type AttestationTypes = BaseCredentialProperty<
+AttestationKeys
 > & {
-  type: string
+  type: string,
+  definition: AttestationDefinition
 }
 
 /**
@@ -58,26 +68,31 @@ export type ChainId = BaseCredentialProperty & {
 /**
  *
  */
-export const CREDENTIAL_TYPES: CredentialType[] = [
+export const ATTESTATION_TYPES: AttestationTypes[] = [
   {
-    id: "kycaml",
+    id: AttestationKeys.kycaml,
     name: "KYC/AML Attestation",
-    type: "KYCAMLAttestation"
+    type: KYCAML_ATTESTATION,
+    definition: getAttestionDefinition(KYCAML_ATTESTATION)
   },
   {
-    id: "kybaml",
+    id: AttestationKeys.kybpaml,
     name: "KYBP/AML Attestation",
-    type: "KYBPAMLAttestation"
+    type: KYBPAML_ATTESTATION,
+    definition: getAttestionDefinition(KYBPAML_ATTESTATION)
   },
   {
-    id: "address",
+    id: AttestationKeys.address,
     name: "Address Ownership",
-    type: "AddressOwner"
+    type: ADDRESS_OWNER_ATTESTATION,
+    definition: getAttestionDefinition(ADDRESS_OWNER_ATTESTATION)
+
   },
   {
-    id: "counterparty",
+    id: AttestationKeys.counterparty,
     name: "Counterparty Compliance",
-    type: "CounterpartyAccountHolder"
+    type: COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION,
+    definition: getAttestionDefinition(COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION)
   }
 ]
 

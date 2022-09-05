@@ -1,41 +1,35 @@
-import { fullURL } from "lib/url-fns"
+import { LabeledDisplayMappingBuilder, OutputDescriptor, STRING_SCHEMA } from "verite"
 
-export const descriptor = {
-  id: "address-output-descriptor",
-  schema: [
+import { AttestationTypes } from "lib/constants"
+
+export function getOutputDescriptors(issuerName: string, type: AttestationTypes): OutputDescriptor[] {
+
+  const properties = [
+    new LabeledDisplayMappingBuilder("Chain", STRING_SCHEMA).path([`$.${type.type}.chain`]).build(),
+    new LabeledDisplayMappingBuilder("Address", STRING_SCHEMA).path([`$.${type.type}.address`]).build(),
+    new LabeledDisplayMappingBuilder("Proof", STRING_SCHEMA).path([`$.${type.type}.proof`]).build(),
+  ]
+   const outputs = [
     {
-      uri: fullURL("/api/schemas/AddressOwner")
-    }
-  ],
-  name: "Proof of Address Ownership",
-  description: "Attestation that the subject owns a given address",
-  display: {
-    title: {
-      text: "Address Ownership"
-    },
-    subtitle: {
-      path: ["$.AddressOwner.address"],
-      fallback: "Includes address"
-    },
-    description: {
-      text: "Expresses proof of ownership of an address for any chain that uses public-private key cryptography in address ownership."
-    },
-    properties: [
-      {
-        label: "Chain",
-        path: ["$.AddressOwner.chain"],
-        schema: { type: "string" }
-      },
-      {
-        label: "Address",
-        path: ["$.AddressOwner.address"],
-        schema: { type: "string" }
-      },
-      {
-        label: "Proof",
-        path: ["$.AddressOwner.proof"],
-        schema: { type: "string" }
+      id: `${type.type}`,
+      schema: type.definition.schema,
+      name: "Proof of Address Ownership",
+      description: "Attestation that the subject owns a given address",
+      display: {
+        title: {
+          text: "Address Ownership"
+        },
+        subtitle: {
+          path: [`$.${type.type}.address`],
+          fallback: "Includes address"
+        },
+        description: {
+          text: "Expresses proof of ownership of an address for any chain that uses public-private key cryptography in address ownership."
+        },
+        properties: properties
       }
-    ]
-  }
+    }
+  ]
+  return outputs
+
 }
