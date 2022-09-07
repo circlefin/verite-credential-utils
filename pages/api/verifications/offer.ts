@@ -1,5 +1,5 @@
 import { handler } from "lib/api-fns"
-import { findCredentialType, findVerificationStatus } from "lib/credential-fns"
+import { findAttestationType, findVerificationStatus } from "lib/credential-fns"
 import { apiDebug } from "lib/debug"
 import { generateVerificationOffer } from "lib/verification-fns"
 
@@ -8,7 +8,9 @@ import { generateVerificationOffer } from "lib/verification-fns"
  *
  */
 const endpoint = handler((req, res) => {
-  const credentialType = findCredentialType(req.query.type as string)
+  const requestedType = req.query.type as string
+  apiDebug(`requested verification type=${requestedType}`)
+  const attestationType = findAttestationType(requestedType)
   const subjectAddress = req.query.subjectAddress as string
   const chainId = req.query.chainId as string
   const statusEndpointResult = findVerificationStatus(
@@ -19,7 +21,7 @@ const endpoint = handler((req, res) => {
     : []
 
   const offer = generateVerificationOffer({
-    credentialType,
+    attestationType: attestationType,
     trustedIssuers,
     statusEndpointResult,
     subjectAddress,
