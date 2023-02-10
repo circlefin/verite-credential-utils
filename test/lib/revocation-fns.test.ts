@@ -32,9 +32,10 @@ test("generateRevocationListStatus builds a non-revoked credential status", asyn
 
   expect(status).toEqual({
     id: `/api/revocation-list?issuer=trusted#0`,
-    type: "RevocationList2021Status",
+    type: "StatusList2021Entry",
     statusListIndex: "0",
-    statusListCredential: "/api/revocation-list?issuer=trusted"
+    statusListCredential: "/api/revocation-list?issuer=trusted",
+    statusPurpose: "revocation"
   })
 })
 
@@ -43,8 +44,9 @@ test("generateRevocationListStatus builds a revoked credential status (index 42)
 
   expect(status).toEqual({
     id: `/api/revocation-list?issuer=trusted#42`,
-    type: "RevocationList2021Status",
+    type: "StatusList2021Entry",
     statusListIndex: "42",
-    statusListCredential: "/api/revocation-list?issuer=trusted"
+    statusListCredential: "/api/revocation-list?issuer=trusted",
+    statusPurpose: "revocation"
   })
 })

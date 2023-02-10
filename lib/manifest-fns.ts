@@ -1,4 +1,4 @@
-import { CredentialManifest, CredentialManifestBuilder, CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0, PresentationDefinition, proofOfControlPresentationDefinition } from "verite"
+import { CredentialManifest, CredentialManifestBuilder, PresentationDefinition, proofOfControlPresentationDefinition } from "verite"
 
 import { apiDebug } from "./debug"
 
