@@ -2,8 +2,8 @@ import {
   buildIssuer,
   generateEncodedRevocationList,
   generateRevocationList,
-  RevocationList2021Status,
-  RevocationListCredential
+  StatusList2021Entry,
+  StatusList2021Credential
 } from "verite"
 
 import { CredentialIssuer } from "lib/constants"
@@ -17,7 +17,7 @@ const STATUS_LIST = [REVOKED_INDEX]
  */
 export const revocationList = async (
   issuer: CredentialIssuer
-): Promise<RevocationListCredential> => {
+): Promise<StatusList2021Credential> => {
   const list = await generateRevocationList({
     statusList: STATUS_LIST,
     url: fullURL(`/api/revocation-list?issuer=${issuer.id}`),
@@ -45,13 +45,14 @@ export const encodedRevocationList = async (issuer: CredentialIssuer) => {
 export const generateRevocationListStatus = async (
   issuer: CredentialIssuer,
   isRevoked: boolean
-): Promise<RevocationList2021Status> => {
+): Promise<StatusList2021Entry> => {
   const index = isRevoked ? REVOKED_INDEX : 0
 
   return {
     id: fullURL(`/api/revocation-list?issuer=${issuer.id}#${index}`),
-    type: "RevocationList2021Status",
+    type: "StatusList2021Entry",
     statusListIndex: index.toString(),
-    statusListCredential: fullURL(`/api/revocation-list?issuer=${issuer.id}`)
+    statusListCredential: fullURL(`/api/revocation-list?issuer=${issuer.id}`),
+    statusPurpose: "revocation"
   }
 }
