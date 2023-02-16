@@ -1,6 +1,8 @@
 import type { NextPage } from "next"
-import { useMemo, useState } from "react"
-import { challengeTokenUrlWrapper } from "verite"
+import { useEffect, useMemo, useState } from "react"
+import Tippy from "@tippyjs/react"
+import { InformationCircleIcon } from "@heroicons/react/solid"
+import { buildAndSignVerifiableCredential, buildIssuer, challengeTokenUrlWrapper, getCredentialSchemaAsVCObject } from "verite"
 
 import FAQ, { FAQType } from "components/FAQ"
 import QRCode from "components/credentials/QRCode"
@@ -17,6 +19,10 @@ import {
   AttestationKeys
 } from "lib/constants"
 import { fullURL } from "lib/url-fns"
+import DidInput from "components/form/DidInput"
+import { expirationDateForStatus } from "lib/credential-fns"
+import { generateAttestation, getCredentialType } from "lib/attestation-fns"
+import { generateRevocationListStatus } from "lib/revocation-fns"
 
 const faqs: FAQType[] = [
   {
@@ -104,6 +110,54 @@ const Page: NextPage = () => {
     CREDENTIAL_STATUSES[0]
   )
 
+  const [did, setDid] = useState("")
+
+  useEffect(() => {
+    setUseDid(did !== '')
+    setVc("")
+  }, [did])
+
+  const [useDid, setUseDid] = useState(false)
+
+  const [vc, setVc] = useState("")
+
+  const generateCredential = async () => {
+    // Generate the Verifiable Presentation
+    setUseDid(true)
+
+    const issuer = buildIssuer(
+      customIssuer.did.key,
+      Buffer.from(customIssuer.did.secret, "hex")
+    )
+    const attestation = await generateAttestation(customType, {
+      chain: chainId?.type
+    })
+    const credentialType = getCredentialType(attestation.type)
+
+
+    // Build a revocation list and index.
+    const revocationListStatus = await generateRevocationListStatus(
+      customIssuer,
+      customStatus.id === "revoked"
+    )
+
+    const vc = await buildAndSignVerifiableCredential(
+      issuer,
+      did,
+      attestation,
+      credentialType,
+      {
+        credentialStatus: revocationListStatus,
+        expirationDate: expirationDateForStatus(customStatus),
+        credentialSchema: getCredentialSchemaAsVCObject(customType.definition)
+      }
+    )
+    setVc(vc)
+
+    console.log(JSON.stringify(vc))
+  }
+
+
   const qrCodeContents = useMemo(() => {
     const params = new URLSearchParams({
       type: customType.id,
@@ -167,9 +221,8 @@ const Page: NextPage = () => {
                 <div>
                   <SelectBox
                     label="Issuer"
-                    labelTooltip={`Select the issuer of this credential. By default '${
-                      CREDENTIAL_ISSUERS.find((c) => c.isTrusted)?.name
-                    }' is the only trusted issuer, but this can be customized on the verifier screen`}
+                    labelTooltip={`Select the issuer of this credential. By default '${CREDENTIAL_ISSUERS.find((c) => c.isTrusted)?.name
+                      }' is the only trusted issuer, but this can be customized on the verifier screen`}
                     items={CREDENTIAL_ISSUERS}
                     selected={customIssuer}
                     setSelected={setCustomIssuer}
@@ -185,14 +238,52 @@ const Page: NextPage = () => {
                     setSelected={setCustomStatus}
                   />
                 </div>
+
+                <div>
+                  <label
+                    htmlFor="subject-did"
+                    className="flex justify-between text-sm font-medium text-gray-700"
+                  >
+                    <span className="flex items-center space-x-2">
+                      <span>Enter Subject DID Manually</span>
+
+                      <Tippy content="If you manually enter a subject DID, the issued credential will be displayed in the UI; otherwise scan the QR code in your Verite wallet">
+                        <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                      </Tippy>
+                    </span>
+
+                    <span className="font-light text-gray-400">Optional</span>
+                  </label>
+
+                  <DidInput
+                    value={did}
+                    setValue={setDid}
+                    generateCredential={generateCredential}
+                  />
+                </div>
+
               </form>
             </div>
             <div className="text-right sm:w-1/2">
-              <QRCode
-                contents={qrCodeContents}
-                link={qrCodeContents.challengeTokenUrl}
-              />
+              {useDid ? (
+                <>
+                  <textarea
+                    readOnly
+                    className="flex-wrap h-58 font-mono text-xs rounded outline-none w-56 bg-gray-50"
+                    value={vc}
+                  />
+                </>
+              ) : (
+                <>
+                  <QRCode
+                    contents={qrCodeContents}
+                    link={qrCodeContents.challengeTokenUrl}
+                  />
+                </>
+              )}
+
             </div>
+
           </div>
         </div>
       </div>
