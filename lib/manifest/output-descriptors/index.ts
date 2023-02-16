@@ -1,4 +1,3 @@
-
 import { OutputDescriptor } from "verite"
 
 import { getOutputDescriptors as addressOutputs } from "./address"
@@ -8,7 +7,10 @@ import { getOutputDescriptors as kycamlOutputs } from "./kycaml"
 
 import { AttestationKeys, AttestationTypes } from "lib/constants"
 
-export function getOutputDescriptors(issuerName: string, type: AttestationTypes) : OutputDescriptor[] {
+export function getOutputDescriptors(
+  issuerName: string,
+  type: AttestationTypes
+): OutputDescriptor[] {
   if (type.id === AttestationKeys.kycaml) {
     return kycamlOutputs(issuerName, type)
   } else if (type.id === AttestationKeys.kybpaml) {

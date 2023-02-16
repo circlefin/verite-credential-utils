@@ -15,8 +15,6 @@ declare global {
 }
 
 const DidInput: FC<Props> = ({ value, setValue, generateCredential }) => {
-
-
   return (
     <>
       <div className="flex mt-1 rounded-md shadow-sm">

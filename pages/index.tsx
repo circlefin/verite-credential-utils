@@ -1,12 +1,19 @@
+import { InformationCircleIcon } from "@heroicons/react/solid"
+import Tippy from "@tippyjs/react"
 import type { NextPage } from "next"
 import { useEffect, useMemo, useState } from "react"
-import Tippy from "@tippyjs/react"
-import { InformationCircleIcon } from "@heroicons/react/solid"
-import { buildAndSignVerifiableCredential, buildIssuer, challengeTokenUrlWrapper, getCredentialSchemaAsVCObject } from "verite"
+import {
+  buildAndSignVerifiableCredential,
+  buildIssuer,
+  challengeTokenUrlWrapper,
+  getCredentialSchemaAsVCObject
+} from "verite"
 
 import FAQ, { FAQType } from "components/FAQ"
 import QRCode from "components/credentials/QRCode"
+import DidInput from "components/form/DidInput"
 import SelectBox from "components/form/SelectBox"
+import { generateAttestation, getCredentialType } from "lib/attestation-fns"
 import {
   ChainId,
   CHAIN_IDS,
@@ -18,11 +25,9 @@ import {
   ATTESTATION_TYPES,
   AttestationKeys
 } from "lib/constants"
-import { fullURL } from "lib/url-fns"
-import DidInput from "components/form/DidInput"
 import { expirationDateForStatus } from "lib/credential-fns"
-import { generateAttestation, getCredentialType } from "lib/attestation-fns"
 import { generateRevocationListStatus } from "lib/revocation-fns"
+import { fullURL } from "lib/url-fns"
 
 const faqs: FAQType[] = [
   {
@@ -113,7 +118,7 @@ const Page: NextPage = () => {
   const [did, setDid] = useState("")
 
   useEffect(() => {
-    setUseDid(did !== '')
+    setUseDid(did !== "")
     setVc("")
   }, [did])
 
@@ -133,7 +138,6 @@ const Page: NextPage = () => {
       chain: chainId?.type
     })
     const credentialType = getCredentialType(attestation.type)
-
 
     // Build a revocation list and index.
     const revocationListStatus = await generateRevocationListStatus(
@@ -156,7 +160,6 @@ const Page: NextPage = () => {
 
     console.log(JSON.stringify(vc))
   }
-
 
   const qrCodeContents = useMemo(() => {
     const params = new URLSearchParams({
@@ -221,8 +224,9 @@ const Page: NextPage = () => {
                 <div>
                   <SelectBox
                     label="Issuer"
-                    labelTooltip={`Select the issuer of this credential. By default '${CREDENTIAL_ISSUERS.find((c) => c.isTrusted)?.name
-                      }' is the only trusted issuer, but this can be customized on the verifier screen`}
+                    labelTooltip={`Select the issuer of this credential. By default '${
+                      CREDENTIAL_ISSUERS.find((c) => c.isTrusted)?.name
+                    }' is the only trusted issuer, but this can be customized on the verifier screen`}
                     items={CREDENTIAL_ISSUERS}
                     selected={customIssuer}
                     setSelected={setCustomIssuer}
@@ -261,7 +265,6 @@ const Page: NextPage = () => {
                     generateCredential={generateCredential}
                   />
                 </div>
-
               </form>
             </div>
             <div className="text-right sm:w-1/2">
@@ -281,9 +284,7 @@ const Page: NextPage = () => {
                   />
                 </>
               )}
-
             </div>
-
           </div>
         </div>
       </div>

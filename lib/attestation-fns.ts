@@ -1,6 +1,13 @@
 import { faker } from "@faker-js/faker"
 import { ethers } from "ethers"
-import { ADDRESS_OWNER_ATTESTATION, Attestation, COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION, KYBPAML_ATTESTATION, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME } from "verite"
+import {
+  ADDRESS_OWNER_ATTESTATION,
+  Attestation,
+  COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION,
+  KYBPAML_ATTESTATION,
+  KYCAML_ATTESTATION,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "verite"
 
 import { AttestationKeys, AttestationTypes } from "./constants"
 import { apiDebug } from "./debug"
@@ -46,7 +53,7 @@ export const generateAttestation: GenerateAttestation = async (type, opts) => {
         proof
       }
     }
-  
+
     if (type.id === AttestationKeys.counterparty) {
       return {
         type: COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION,
@@ -67,7 +74,6 @@ export const generateAttestation: GenerateAttestation = async (type, opts) => {
   throw new Error(`Unknown attestation type: ${type}`)
 }
 
-
 export function getCredentialType(attestationType: string): string {
   if (attestationType === KYCAML_ATTESTATION) {
     return KYCAML_CREDENTIAL_TYPE_NAME
@@ -77,6 +83,6 @@ export function getCredentialType(attestationType: string): string {
     return "AddressOwnerCredential"
   } else if (attestationType === COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION) {
     return "CounterpartyAccountHolderCredential"
-  } 
+  }
   throw new Error(`Unrecognized attestation type ${attestationType}`)
 }
