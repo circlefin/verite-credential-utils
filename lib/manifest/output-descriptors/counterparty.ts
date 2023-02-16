@@ -1,13 +1,22 @@
-import { LabeledDisplayMappingBuilder, OutputDescriptor, STRING_SCHEMA } from "verite"
+import {
+  LabeledDisplayMappingBuilder,
+  OutputDescriptor,
+  STRING_SCHEMA
+} from "verite"
 
 import { AttestationTypes } from "lib/constants"
 
-
-export function getOutputDescriptors(issuerName: string, type: AttestationTypes): OutputDescriptor[] {
-
+export function getOutputDescriptors(
+  issuerName: string,
+  type: AttestationTypes
+): OutputDescriptor[] {
   const properties = [
-    new LabeledDisplayMappingBuilder("Legal Name", STRING_SCHEMA).path([`$.${type.type}.legalName`]).build(),
-    new LabeledDisplayMappingBuilder("Account Holder", STRING_SCHEMA).path([`$.${type.type}.accountHolder`]).build(),
+    new LabeledDisplayMappingBuilder("Legal Name", STRING_SCHEMA)
+      .path([`$.${type.type}.legalName`])
+      .build(),
+    new LabeledDisplayMappingBuilder("Account Holder", STRING_SCHEMA)
+      .path([`$.${type.type}.accountHolder`])
+      .build()
   ]
 
   const outputs = [

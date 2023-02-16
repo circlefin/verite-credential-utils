@@ -1,12 +1,13 @@
 import { InformationCircleIcon } from "@heroicons/react/solid"
 import Tippy from "@tippyjs/react"
 import type { NextPage } from "next"
-import { useMemo, useState } from "react"
-import { challengeTokenUrlWrapper } from "verite"
+import { useEffect, useMemo, useState } from "react"
+import { challengeTokenUrlWrapper, decodeVerifiableCredential } from "verite"
 
 import FAQ, { FAQType } from "components/FAQ"
 import QRCode from "components/credentials/QRCode"
 import SelectBox from "components/form/SelectBox"
+import VcInput from "components/form/VcInput"
 import WalletAddressInput from "components/form/WalletAddressInput"
 import {
   ChainId,
@@ -115,6 +116,17 @@ const VerifierPage: NextPage = () => {
     }
   }
 
+  const [vc, setVc] = useState("")
+
+  const [useVc, setUseVc] = useState(false)
+
+  const [result, setResult] = useState("")
+
+  useEffect(() => {
+    setUseVc(vc !== "")
+    setResult("")
+  }, [vc])
+
   const qrCodeContents = useMemo(() => {
     const issuers = trustedIssuers.concat(customTrustedIssuer).filter(Boolean)
 
@@ -143,6 +155,15 @@ const VerifierPage: NextPage = () => {
     verificationStatus,
     chainId
   ])
+
+
+  const verifyCredential = async () => {
+    // Generate the Verifiable Presentation
+    setUseVc(true)
+    const r = await decodeVerifiableCredential(vc)
+    setResult(JSON.stringify(r, null, 2))
+    console.log(JSON.stringify(result))
+  }
 
   return (
     <>
@@ -261,13 +282,49 @@ const VerifierPage: NextPage = () => {
                     setSelected={setChainId}
                   />
                 </div>
+                <div>
+                <label
+                    htmlFor="subject-did"
+                    className="flex justify-between text-sm font-medium text-gray-700"
+                  >
+                    <span className="flex items-center space-x-2">
+                      <span>Enter VC JWT Manually</span>
+
+                      <Tippy content="If you manually enter a VC JWT, the verification result will be displayed in the UI; otherwise scan the QR code in your Verite wallet">
+                        <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                      </Tippy>
+                    </span>
+
+                    <span className="font-light text-gray-400">Optional</span>
+                  </label>
+                  <VcInput
+                    value={vc}
+                    setValue={setVc}
+                    generateCredential={verifyCredential}
+                  />
+                </div>
+
               </form>
             </div>
+
+
             <div className="text-right sm:w-1/2">
-              <QRCode
-                contents={qrCodeContents}
-                link={qrCodeContents.challengeTokenUrl}
-              />
+              {useVc ? (
+                <>
+                  <textarea
+                    readOnly
+                    className="flex-wrap h-58 font-mono text-xs rounded outline-none w-56 bg-gray-50"
+                    value={result}
+                  />
+                </>
+              ) : (
+                <>
+                  <QRCode
+                    contents={qrCodeContents}
+                    link={qrCodeContents.challengeTokenUrl}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>

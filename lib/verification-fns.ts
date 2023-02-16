@@ -25,7 +25,6 @@ export const generateVerificationOffer = ({
   subjectAddress,
   chainId
 }: GenerateVerificationOfferParams) => {
-
   const pd = getPresentationDefinition(attestationType, trustedIssuers)
 
   const params = new URLSearchParams({

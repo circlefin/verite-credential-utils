@@ -1,4 +1,11 @@
-import { ADDRESS_OWNER_ATTESTATION, AttestationDefinition, COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION, getAttestionDefinition, KYBPAML_ATTESTATION, KYCAML_ATTESTATION } from "verite"
+import {
+  ADDRESS_OWNER_ATTESTATION,
+  AttestationDefinition,
+  COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION,
+  getAttestionDefinition,
+  KYBPAML_ATTESTATION,
+  KYCAML_ATTESTATION
+} from "verite"
 
 /**
  *
@@ -11,7 +18,7 @@ export type BaseCredentialProperty<T = string> = {
 
 export enum AttestationKeys {
   kycaml = "kycaml",
-  kybpaml =  "kybpaml",
+  kybpaml = "kybpaml",
   address = "addresss",
   counterparty = "counterparty"
 }
@@ -19,10 +26,8 @@ export enum AttestationKeys {
 /**
  *
  */
-export type AttestationTypes = BaseCredentialProperty<
-AttestationKeys
-> & {
-  type: string,
+export type AttestationTypes = BaseCredentialProperty<AttestationKeys> & {
+  type: string
   definition: AttestationDefinition
 }
 
@@ -86,7 +91,6 @@ export const ATTESTATION_TYPES: AttestationTypes[] = [
     name: "Address Ownership",
     type: ADDRESS_OWNER_ATTESTATION,
     definition: getAttestionDefinition(ADDRESS_OWNER_ATTESTATION)
-
   },
   {
     id: AttestationKeys.counterparty,

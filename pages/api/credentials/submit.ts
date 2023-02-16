@@ -36,7 +36,9 @@ const endpoint = handler(async (req, res) => {
   const issuerInfo = findCredentialIssuer(req.query.issuer as string)
   const status = findCredentialStatus(req.query.status as string)
   const chainId =
-    type.id === AttestationKeys.address ? findChainId(req.query.chain as string) : undefined
+    type.id === AttestationKeys.address
+      ? findChainId(req.query.chain as string)
+      : undefined
 
   /**
    * Get signer (issuer)
@@ -51,7 +53,7 @@ const endpoint = handler(async (req, res) => {
 
   apiDebug(`Issuer generating manifest for type.id=${type.id}`)
   const manifest = generateManifest(type, issuerInfo)
-  
+
   /**
    * Using Presentation Exchange, the client will submit a credential
    * application. Since we are using JWTs to format the data, we first must
